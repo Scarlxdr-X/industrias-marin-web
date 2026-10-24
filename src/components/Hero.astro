@@ -1,0 +1,107 @@
+---
+import Foto from "./Foto.astro";
+import { empresa } from "../data/empresa";
+
+const datos = [
+  { valor: String(empresa.desde), texto: "empezamos en un pequeño local" },
+  { valor: "5 años", texto: "de duración garantizada" },
+  { valor: "≈50", texto: "familias trabajan con nosotros" },
+];
+---
+
+<section class="hero">
+  <div class="contenedor hero__interior">
+    <div class="hero__texto">
+      <p class="etiqueta">Fábrica propia · +30 años</p>
+      <h1>Muebles en madera,<br /><em>hechos para durar.</em></h1>
+      <p class="hero__bajada">
+        Diseñamos y fabricamos alcobas, salas, comedores y cocinas en nuestra planta de
+        El Cerrito. Toda la madera pasa por secado en horno e inmunizado antes de
+        convertirse en tu mueble.
+      </p>
+      <div class="hero__botones">
+        <a href="#productos" class="boton boton--morado">Ver catálogo</a>
+        <a href={empresa.whatsapp} class="boton boton--borde">Cotiza un mueble a tu medida</a>
+      </div>
+      <dl class="hero__datos">
+        {datos.map((d) => (
+          <div>
+            <dt>{d.valor}</dt>
+            <dd>{d.texto}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <div class="hero__imagen">
+      <!-- Trazo cobre inspirado en la "L" del logo -->
+      <svg class="hero__trazo" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M8 392 C 30 300, 40 180, 30 20" />
+        <path d="M8 392 C 120 372, 300 372, 392 386" />
+      </svg>
+      <Foto etiqueta="Alcoba Ártica ambientada" alto="520px" radio="4px 120px 4px 4px" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { overflow: hidden; }
+  .hero__interior {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 56px;
+    padding-block: 72px 88px;
+  }
+  .hero__texto {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .hero h1 { font-size: clamp(44px, 6vw, 68px); }
+  .hero__bajada { margin: 0; font-size: 19px; color: #4A4155; max-width: 520px; }
+  .hero__botones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+
+  .hero__datos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 520px;
+    margin: 24px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--borde);
+  }
+  .hero__datos dt {
+    font-family: var(--fuente-titulos);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--morado);
+  }
+  .hero__datos dd { margin: 4px 0 0; font-size: 14px; color: var(--texto-suave); }
+
+  .hero__imagen {
+    flex: 1 1 440px;
+    min-width: 0;
+    position: relative;
+    padding: 0 0 28px 28px;
+  }
+  .hero__imagen :global(.foto) { position: relative; }
+  .hero__trazo {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 70%;
+    height: 70%;
+    overflow: visible;
+  }
+  .hero__trazo path {
+    fill: none;
+    stroke: var(--cobre);
+    stroke-width: 7;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+</style>

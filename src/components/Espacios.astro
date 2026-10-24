@@ -1,0 +1,81 @@
+---
+import Foto from "./Foto.astro";
+import { espacios } from "../data/espacios";
+---
+
+<section id="productos" class="espacios">
+  <div class="contenedor">
+    <div class="espacios__cabecera">
+      <div>
+        <p class="etiqueta">Catálogo</p>
+        <h2>Encuentra tu mueble <em>por espacio</em></h2>
+      </div>
+      <p>
+        16 líneas de producto organizadas por el lugar de la casa donde las vas a usar.
+        Todo se puede ajustar en medidas, color y acabado.
+      </p>
+    </div>
+
+    <div class="espacios__grid">
+      {espacios.map((e) => (
+        <a href={`/catalogo/${e.slug}`} class="tarjeta">
+          <Foto etiqueta={e.foto} alto="240px" radio="0" />
+          <div class="tarjeta__cuerpo">
+            <div class="tarjeta__titulo">
+              <h3>{e.nombre}</h3>
+              <span class="tarjeta__ver">Ver todo →</span>
+            </div>
+            <p>{e.categorias.join(" · ")}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .espacios { padding-block: 96px; scroll-margin-top: 90px; }
+
+  .espacios__cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px 48px;
+    margin-bottom: 40px;
+  }
+  .espacios__cabecera h2 { font-size: clamp(38px, 5vw, 52px); margin-top: 8px; }
+  .espacios__cabecera > p { margin: 0; max-width: 420px; color: var(--texto-suave); }
+
+  .espacios__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr));
+    gap: 28px;
+  }
+
+  .tarjeta {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .tarjeta:hover {
+    color: var(--texto);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(59, 11, 126, 0.1);
+  }
+  .tarjeta__cuerpo { padding: 22px 24px 26px; display: grid; gap: 10px; }
+  .tarjeta__titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .tarjeta h3 { font-size: 32px; }
+  .tarjeta__ver { font-size: 14px; font-weight: 600; color: var(--cobre-texto); white-space: nowrap; }
+  .tarjeta p { margin: 0; font-size: 15px; color: var(--texto-suave); }
+</style>

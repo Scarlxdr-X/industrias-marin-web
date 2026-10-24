@@ -1,0 +1,34 @@
+---
+interface Props {
+  etiqueta: string;       // qué foto va aquí (también sirve de texto alternativo)
+  src?: string;           // ruta de la foto, ej: "/img/alcoba-artica.jpg"
+  alto?: string;          // ej: "520px"
+  radio?: string;         // ej: "4px 120px 4px 4px"
+}
+
+const { etiqueta, src, alto = "320px", radio = "var(--radio)" } = Astro.props;
+---
+
+{src ? (
+  <img class="foto" src={src} alt={etiqueta} loading="lazy" style={`height:${alto};border-radius:${radio}`} />
+) : (
+  <div class="foto foto--vacia" style={`height:${alto};border-radius:${radio}`}>
+    <span>Foto: {etiqueta}</span>
+  </div>
+)}
+
+<style>
+  .foto {
+    width: 100%;
+    object-fit: cover;
+  }
+  .foto--vacia {
+    background: var(--gris-foto);
+    color: var(--texto-suave);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-size: 15px;
+    padding: 24px;
+  }
+</style>
