@@ -1,0 +1,76 @@
+---
+import { empresa } from "../data/empresa";
+const anio = new Date().getFullYear();
+---
+
+<footer class="pie">
+  <div class="contenedor pie__columnas">
+    <div class="pie__marca">
+      <span class="pie__nombre">Marín</span>
+      <span>{empresa.razonSocial}<br />Muebles en madera desde {empresa.desde}.</span>
+    </div>
+
+    <nav class="pie__grupo" aria-label="Productos">
+      <span class="pie__titulo">Productos</span>
+      <a href="/#productos">Alcobas y armarios</a>
+      <a href="/#productos">Salas y comedores</a>
+      <a href="/#productos">Cocinas y oficina</a>
+    </nav>
+
+    <nav class="pie__grupo" aria-label="Empresa">
+      <span class="pie__titulo">Empresa</span>
+      <a href="/#nosotros">Nosotros</a>
+      <a href="/#medida">Hecho a medida</a>
+      <a href="/#visitanos">Contacto</a>
+    </nav>
+
+    <div class="pie__grupo">
+      <span class="pie__titulo">Visítanos</span>
+      <span>{empresa.direccion.linea1}</span>
+      <span>{empresa.direccion.linea2}</span>
+      <a href={empresa.telefono.href}>{empresa.telefono.texto}</a>
+      <span class="pie__redes">
+        <a href={empresa.redes.instagram}>Instagram</a>
+        <a href={empresa.redes.facebook}>Facebook</a>
+      </span>
+    </div>
+  </div>
+
+  <div class="contenedor pie__legal">
+    © {anio} {empresa.razonSocial} Todos los derechos reservados.
+  </div>
+</footer>
+
+<style>
+  .pie {
+    background: var(--berenjena);
+    color: #DCCFEA;
+    font-size: 15px;
+  }
+  .pie__columnas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    padding-block: 64px 32px;
+  }
+  .pie__marca { display: flex; flex-direction: column; gap: 10px; }
+  .pie__nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 34px;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--blanco);
+    line-height: 1;
+  }
+  .pie__grupo { display: flex; flex-direction: column; gap: 6px; }
+  .pie__titulo { color: var(--cobre-claro); font-weight: 600; margin-bottom: 4px; }
+  .pie a { color: #DCCFEA; text-decoration: none; }
+  .pie a:hover { color: var(--blanco); }
+  .pie__redes { display: flex; gap: 16px; margin-top: 6px; }
+  .pie__legal {
+    border-top: 1px solid #3E1E5E;
+    padding-block: 20px 28px;
+    font-size: 13px;
+    color: #B9A9CB;
+  }
+</style>

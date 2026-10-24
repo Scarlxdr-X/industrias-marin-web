@@ -1,0 +1,132 @@
+---
+import { empresa, menu } from "../data/empresa";
+---
+
+<div class="barra-superior">
+  <div class="contenedor barra-superior__interior">
+    <span>Fabricantes de muebles en madera desde {empresa.desde} · El Cerrito, Valle</span>
+    <span class="barra-superior__contacto">
+      <a href={empresa.telefono.href}>Tel. {empresa.telefono.texto}</a>
+      <a href={empresa.whatsapp} class="destacado">WhatsApp {empresa.celular.texto}</a>
+    </span>
+  </div>
+</div>
+
+<header class="encabezado" data-abierto="false">
+  <div class="contenedor encabezado__interior">
+    <a href="/" class="encabezado__logo" aria-label={`${empresa.nombre}, inicio`}>
+      <img src="/img/logo.png" alt={empresa.razonSocial} width="112" height="64" />
+    </a>
+
+    <button class="encabezado__boton-menu" aria-expanded="false" aria-controls="menu-principal">
+      Menú
+    </button>
+
+    <nav id="menu-principal" class="encabezado__nav" aria-label="Principal">
+      {menu.map((item) => <a href={item.href}>{item.texto}</a>)}
+      <a href={empresa.whatsapp} class="boton boton--cobre encabezado__cotizar">Cotizar</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const encabezado = document.querySelector(".encabezado");
+  const boton = document.querySelector(".encabezado__boton-menu");
+
+  boton?.addEventListener("click", () => {
+    const abierto = encabezado?.getAttribute("data-abierto") === "true";
+    encabezado?.setAttribute("data-abierto", String(!abierto));
+    boton.setAttribute("aria-expanded", String(!abierto));
+  });
+
+  // Cierra el menú al tocar un enlace (en celular)
+  document.querySelectorAll(".encabezado__nav a").forEach((enlace) =>
+    enlace.addEventListener("click", () => {
+      encabezado?.setAttribute("data-abierto", "false");
+      boton?.setAttribute("aria-expanded", "false");
+    })
+  );
+</script>
+
+<style>
+  .barra-superior {
+    background: var(--morado);
+    color: #F3ECFA;
+    font-size: 14px;
+  }
+  .barra-superior__interior {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 24px;
+    padding-block: 10px;
+  }
+  .barra-superior__contacto { display: flex; gap: 20px; flex-wrap: wrap; }
+  .barra-superior a { color: #F3ECFA; text-decoration: none; }
+  .barra-superior a.destacado { color: var(--cobre-claro); font-weight: 500; }
+
+  .encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+  }
+  .encabezado__interior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 12px;
+  }
+  .encabezado__logo img { height: 64px; width: auto; }
+
+  .encabezado__nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-weight: 500;
+  }
+  .encabezado__nav a:not(.boton) {
+    color: var(--texto);
+    text-decoration: none;
+    padding-block: 10px;
+  }
+  .encabezado__nav a:not(.boton):hover { color: var(--cobre-texto); }
+  .encabezado__cotizar { padding: 12px 22px; }
+
+  .encabezado__boton-menu { display: none; }
+
+  /* ---- Celular y tablet ---- */
+  @media (max-width: 960px) {
+    .encabezado__interior { flex-wrap: wrap; }
+    .encabezado__logo img { height: 52px; }
+
+    .encabezado__boton-menu {
+      display: block;
+      font: inherit;
+      font-weight: 600;
+      color: var(--morado);
+      background: var(--lavanda);
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      cursor: pointer;
+    }
+
+    .encabezado__nav {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding-bottom: 12px;
+    }
+    .encabezado[data-abierto="true"] .encabezado__nav { display: flex; }
+    .encabezado__nav a:not(.boton) {
+      padding: 14px 4px;
+      border-bottom: 1px solid var(--borde);
+    }
+    .encabezado__cotizar { margin-top: 12px; text-align: center; }
+  }
+</style>
