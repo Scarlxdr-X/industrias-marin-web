@@ -1,16 +1,23 @@
 ---
+import "../styles/global.css";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prueba de estilos</title>
+  </head>
+  <body>
+    <main class="contenedor" style="padding-block: 64px; display: grid; gap: 24px;">
+      <p class="etiqueta">Fábrica propia · +30 años</p>
+      <h1 style="font-size: 64px;">Muebles en madera,<br /><em>hechos para durar.</em></h1>
+      <p>Si ves esto en Jost y el título en Cormorant, las fuentes funcionan.</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <a class="boton boton--morado" href="#">Ver catálogo</a>
+        <a class="boton boton--borde" href="#">A tu medida</a>
+        <a class="boton boton--cobre" href="#">Cotizar</a>
+      </div>
+    </main>
+  </body>
 </html>

@@ -1,0 +1,94 @@
+/* ---------- Fuentes ---------- */
+@import "@fontsource/jost/400.css";
+@import "@fontsource/jost/500.css";
+@import "@fontsource/jost/600.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+
+/* ---------- Paleta del logo ---------- */
+:root {
+  --morado: #3B0B7E;        /* títulos, botones principales */
+  --berenjena: #24073F;     /* pie de página */
+  --cobre: #CD7332;         /* solo trazos y detalles decorativos */
+  --cobre-texto: #A8561A;   /* botones y textos cobre sobre blanco */
+  --cobre-claro: #E8A06A;   /* textos cobre sobre fondo morado */
+  --lavanda: #F6F3F9;       /* fondos suaves de sección */
+  --gris-foto: #EEEAF3;     /* fondo mientras no hay foto */
+  --borde: #ECE8F1;
+
+  --texto: #2A2233;
+  --texto-suave: #5E5468;
+  --blanco: #FFFFFF;
+
+  --fuente-titulos: "Cormorant Garamond", Georgia, serif;
+  --fuente-texto: "Jost", system-ui, sans-serif;
+
+  --ancho-max: 1200px;
+  --radio: 6px;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--texto);
+  background: var(--blanco);
+}
+
+img { max-width: 100%; display: block; }
+
+h1, h2, h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--morado);
+  margin: 0;
+}
+
+h1 em, h2 em, h3 em { font-weight: 500; }
+
+a { color: var(--morado); }
+a:hover { color: var(--cobre-texto); }
+
+/* ---------- Utilidades ---------- */
+.contenedor {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding-inline: 24px;
+}
+
+.etiqueta {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cobre-texto);
+}
+
+.boton {
+  display: inline-block;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  transition: transform 0.15s, background 0.15s;
+}
+.boton:hover { transform: translateY(-1px); }
+
+.boton--morado { background: var(--morado); color: var(--blanco); }
+.boton--morado:hover { background: var(--berenjena); color: var(--blanco); }
+
+.boton--cobre { background: var(--cobre-texto); color: var(--blanco); }
+.boton--cobre:hover { background: #8F4914; color: var(--blanco); }
+
+.boton--borde { border-color: var(--morado); color: var(--morado); }
+.boton--borde:hover { background: var(--lavanda); color: var(--morado); }
