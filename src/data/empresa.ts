@@ -20,6 +20,17 @@ export const empresa = {
     linea2: "El Cerrito, Valle del Cauca",
   },
 
+  horario: "Lunes a sábado, 8:00 a. m. – 6:00 p. m.",  
+  entregaEstimada: "3 a 5 semanas",                     // ⚠️ confirmar con la familia
+
+  mapa: {
+    embed: "https://www.google.com/maps?q=" +
+      encodeURIComponent("Carrera 1 # 1-131, El Cerrito, Valle del Cauca, Colombia") +
+      "&output=embed",
+    comoLlegar: "https://www.google.com/maps/dir/?api=1&destination=" +
+      encodeURIComponent("Carrera 1 # 1-131, El Cerrito, Valle del Cauca, Colombia"),
+  },
+
   redes: {
     instagram: "https://www.instagram.com/industriasmarin_/",
     facebook: "https://www.facebook.com/industriasmarin",

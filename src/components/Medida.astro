@@ -1,0 +1,76 @@
+---
+import Foto from "./Foto.astro";
+import TituloSeccion from "./TituloSeccion.astro";
+import { empresa } from "../data/empresa";
+
+const pasos = [
+  { titulo: "Escríbenos con tu idea.", texto: "Una foto del espacio y las medidas aproximadas son suficientes." },
+  { titulo: "Te proponemos diseño y precio.", texto: "Elegimos juntos madera, color y acabado." },
+  { titulo: "Lo fabricamos y entregamos.", texto: `Tiempo estimado: ${empresa.entregaEstimada}.` },
+];
+---
+
+<section id="medida" class="medida">
+  <div class="contenedor medida__interior">
+    <div class="medida__foto">
+      <Foto etiqueta="Carpintero trabajando una pieza en el taller" alto="440px" radio="120px 4px 4px 4px" />
+    </div>
+
+    <div class="medida__texto">
+      <TituloSeccion etiqueta="Muebles a tu medida">
+        ¿Un espacio difícil? <em>Lo hacemos a la medida.</em>
+      </TituloSeccion>
+
+      <ol class="medida__pasos">
+        {pasos.map((p, i) => (
+          <li>
+            <span class="medida__numero">{i + 1}</span>
+            <span><strong>{p.titulo}</strong> {p.texto}</span>
+          </li>
+        ))}
+      </ol>
+
+      <div>
+        <a href={empresa.whatsapp} class="boton boton--cobre">Enviar mi idea por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .medida { padding-block: 96px; scroll-margin-top: 90px; }
+  .medida__interior {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 56px;
+  }
+  .medida__foto { flex: 1 1 420px; min-width: 0; }
+  .medida__texto {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .medida__pasos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 18px;
+  }
+  .medida__pasos li { display: flex; gap: 18px; align-items: flex-start; }
+  .medida__pasos strong { font-weight: 600; }
+  .medida__numero {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--lavanda);
+    color: var(--morado);
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  etiqueta: string;
+  claro?: boolean;   // true cuando va sobre fondo morado
+}
+const { etiqueta, claro = false } = Astro.props;
+---
+
+<div class:list={["titulo-seccion", { "titulo-seccion--claro": claro }]}>
+  <p class="etiqueta">{etiqueta}</p>
+  <h2><slot /></h2>
+</div>
+
+<style>
+  .titulo-seccion { display: grid; gap: 8px; }
+  .titulo-seccion h2 { font-size: clamp(38px, 5vw, 52px); }
+  .titulo-seccion--claro .etiqueta { color: var(--cobre-claro); }
+  .titulo-seccion--claro h2 { color: var(--blanco); }
+</style>

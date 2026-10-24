@@ -1,0 +1,77 @@
+---
+import TituloSeccion from "./TituloSeccion.astro";
+import { empresa } from "../data/empresa";
+---
+
+<section id="visitanos" class="visitanos">
+  <div class="contenedor visitanos__interior">
+    <div class="visitanos__texto">
+      <TituloSeccion etiqueta="Visítanos">
+        Ven a ver y tocar <em>la madera</em>
+      </TituloSeccion>
+
+      <dl class="visitanos__datos">
+        <dt>Dirección</dt>
+        <dd>{empresa.direccion.linea1}<br />{empresa.direccion.linea2}</dd>
+
+        <dt>Horario</dt>
+        <dd>{empresa.horario}</dd>
+
+        <dt>Teléfono</dt>
+        <dd><a href={empresa.telefono.href}>{empresa.telefono.texto}</a></dd>
+
+        <dt>Celular</dt>
+        <dd><a href={empresa.whatsapp}>{empresa.celular.texto}</a> (WhatsApp)</dd>
+      </dl>
+
+      <div class="visitanos__botones">
+        <a href={empresa.mapa.comoLlegar} class="boton boton--morado" target="_blank" rel="noopener">Cómo llegar</a>
+        <a href={empresa.telefono.href} class="boton boton--borde">Llamar</a>
+      </div>
+    </div>
+
+    <iframe
+      class="visitanos__mapa"
+      src={empresa.mapa.embed}
+      title="Mapa de Industrias Marín en El Cerrito"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
+</section>
+
+<style>
+  .visitanos { padding-block: 96px; scroll-margin-top: 90px; }
+  .visitanos__interior {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    align-items: stretch;
+  }
+  .visitanos__texto {
+    flex: 1 1 380px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .visitanos__datos {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 14px 16px;
+    font-size: 16px;
+  }
+  .visitanos__datos dt { color: var(--texto-suave); }
+  .visitanos__datos dd { margin: 0; }
+  .visitanos__botones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .visitanos__mapa {
+    flex: 1 1 480px;
+    min-width: 0;
+    min-height: 380px;
+    border: 0;
+    border-radius: var(--radio);
+    background: var(--gris-foto);
+  }
+</style>
