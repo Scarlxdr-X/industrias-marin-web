@@ -26,6 +26,7 @@
 
   --ancho-max: 1200px;
   --radio: 6px;
+  --espacio-seccion: clamp(56px, 10vw, 96px);   /* margen arriba/abajo de cada sección */
 }
 
 /* ---------- Base ---------- */
@@ -40,6 +41,8 @@ body {
   line-height: 1.6;
   color: var(--texto);
   background: var(--blanco);
+  -webkit-tap-highlight-color: transparent;   /* quita el recuadro gris al tocar en celular */
+  overflow-x: clip;                            /* evita que la página se arrastre hacia los lados */
 }
 
 img { max-width: 100%; display: block; }

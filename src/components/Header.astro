@@ -4,7 +4,7 @@ import { empresa, menu } from "../data/empresa";
 
 <div class="barra-superior">
   <div class="contenedor barra-superior__interior">
-    <span>Fabricantes de muebles en madera desde {empresa.desde} · El Cerrito, Valle</span>
+    <span class="barra-superior__lema">Fabricantes de muebles en madera desde {empresa.desde} · El Cerrito, Valle</span>
     <span class="barra-superior__contacto">
       <a href={empresa.telefono.href}>Tel. {empresa.telefono.texto}</a>
       <a href={empresa.whatsapp} class="destacado">WhatsApp {empresa.celular.texto}</a>
@@ -97,7 +97,7 @@ import { empresa, menu } from "../data/empresa";
 
   .encabezado__boton-menu { display: none; }
 
-  /* ---- Celular y tablet ---- */
+  /* ---- Tablet y celular: menú desplegable ---- */
   @media (max-width: 960px) {
     .encabezado__interior { flex-wrap: wrap; }
     .encabezado__logo img { height: 52px; }
@@ -128,5 +128,12 @@ import { empresa, menu } from "../data/empresa";
       border-bottom: 1px solid var(--borde);
     }
     .encabezado__cotizar { margin-top: 12px; text-align: center; }
+  }
+
+  /* ---- Celular: barra compacta y logo más pequeño ---- */
+  @media (max-width: 640px) {
+    .barra-superior__lema { display: none; }
+    .barra-superior__interior { justify-content: center; }
+    .encabezado__logo img { height: 44px; }
   }
 </style>

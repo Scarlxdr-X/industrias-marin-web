@@ -10,9 +10,9 @@ const { etiqueta, src, alto = "320px", radio = "var(--radio)" } = Astro.props;
 ---
 
 {src ? (
-  <img class="foto" src={src} alt={etiqueta} loading="lazy" style={`height:${alto};border-radius:${radio}`} />
+  <img class="foto" src={src} alt={etiqueta} loading="lazy" style={`height:clamp(240px, 75vw, ${alto});border-radius:${radio}`} />
 ) : (
-  <div class="foto foto--vacia" style={`height:${alto};border-radius:${radio}`}>
+  <div class="foto foto--vacia" style={`height:clamp(240px, 75vw, ${alto});border-radius:${radio}`}>
     <span>Foto: {etiqueta}</span>
   </div>
 )}
