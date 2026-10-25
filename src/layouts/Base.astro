@@ -7,10 +7,12 @@ import WhatsAppFlotante from "../components/WhatsAppFlotante.astro";
 interface Props {
   titulo: string;
   descripcion?: string;
+  noindex?: boolean;   // true en páginas que Google no debe mostrar (ej: /admin)
 }
 
 const {
   titulo,
+  noindex = false,
   descripcion = "Diseño y fabricación de muebles en madera inmunizada y secada al horno. Alcobas, salas, comedores y cocinas a la medida en El Cerrito, Valle del Cauca.",
 } = Astro.props;
 ---
@@ -24,6 +26,7 @@ const {
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
     <meta property="og:type" content="website" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
   </head>
   <body>
     <Header />
@@ -32,5 +35,13 @@ const {
     </main>
     <Footer />
     <WhatsAppFlotante />
+
+    <script>
+      // El código del modo administrador solo se descarga si quien navega inició sesión.
+      // Los visitantes normales no cargan nada de esto.
+      if (document.cookie.split("; ").includes("marin_admin=1")) {
+        import("../scripts/admin/modo-admin");
+      }
+    </script>
   </body>
 </html>

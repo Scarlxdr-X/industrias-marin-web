@@ -1,4 +1,4 @@
-// Los datos que cambian (teléfonos, horario, dirección…) se editan en el panel /keystatic
+// Los datos que cambian (teléfonos, horario, dirección…) se editan en el modo administrador
 // → "Datos de la empresa", y se guardan en src/content/empresa.json.
 import datos from "../content/empresa.json";
 

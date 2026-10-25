@@ -35,7 +35,7 @@ const whatsapp = enlaceWhatsapp(
 <Base titulo={`${producto.nombre} | Industrias Marín`}
       descripcion={producto.descripcion ||
         `${producto.nombre}: ${producto.categoria.toLowerCase()} en madera, fabricado a la medida por Industrias Marín en El Cerrito, Valle.`}>
-  <div class="contenedor ficha">
+  <div class="contenedor ficha" data-ficha data-slug={producto.slug} data-nombre={producto.nombre} data-espacio={espacio.slug} data-categoria={producto.categoria}>
     <nav class="migas" aria-label="Ruta">
       <a href="/">Inicio</a> <span aria-hidden="true">/</span>
       <a href={`/catalogo/${espacio.slug}`}>{espacio.nombre}</a> <span aria-hidden="true">/</span>

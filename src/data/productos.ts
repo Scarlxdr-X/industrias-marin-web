@@ -10,7 +10,6 @@ export interface Producto {
   descripcion: string;
   detalles: string[];
   foto?: ImageMetadata | null;
-  portada: boolean;          // true = foto de portada de su espacio en el inicio
 }
 
 // Lee los JSON de src/content/productos, agrega el espacio y ordena alfabéticamente

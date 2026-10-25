@@ -2,13 +2,15 @@
 import Foto from "./Foto.astro";
 import { espacios } from "../data/espacios";
 import { obtenerProductos } from "../data/productos";
+import portadasElegidas from "../content/portadas.json";
 
 const productos = await obtenerProductos();
 
-// Portada de cada espacio: el mueble marcado como portada en el panel, o el primero con foto
-const portadaDe = (slug: string) =>
-  (productos.find((p) => p.espacio === slug && p.portada && p.foto) ??
-   productos.find((p) => p.espacio === slug && p.foto))?.foto;
+// Portada de cada espacio: el mueble elegido en el modo administrador, o el primero con foto
+const portadas: Record<string, string> = portadasElegidas;
+const portadaDe = (espacio: string) =>
+  (productos.find((p) => p.slug === portadas[espacio] && p.foto) ??
+   productos.find((p) => p.espacio === espacio && p.foto))?.foto;
 ---
 
 <section id="productos" class="espacios">
