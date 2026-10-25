@@ -44,7 +44,7 @@ const whatsapp = enlaceWhatsapp(
 
     <div class="ficha__interior">
       <div class="ficha__foto">
-        <Foto etiqueta={producto.nombre} src={producto.foto} alto="540px" radio="4px 120px 4px 4px" prioridad />
+        <Foto etiqueta={producto.nombre} src={producto.foto} alto="540px" radio="4px 120px 4px 4px" prioridad transicion={`foto-${producto.slug}`} />
       </div>
 
       <div class="ficha__info">

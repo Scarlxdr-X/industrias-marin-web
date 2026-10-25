@@ -1,0 +1,114 @@
+---
+// Intro con el logo: aparece "escrito" y luego la pantalla se abre como una cortina.
+// - Solo en la primera visita al inicio (por sesión del navegador).
+// - Dura ~1,7 s; tocar la pantalla la salta.
+// - No aparece con "reducir movimiento" activado, ni en modo administrador.
+// - Toda la animación es CSS: aunque fallara el JavaScript, al terminar desaparece sola.
+---
+
+<div class="intro" aria-hidden="true">
+  <div class="intro__panel intro__panel--izq"></div>
+  <div class="intro__panel intro__panel--der"></div>
+  <div class="intro__linea"></div>
+  <img class="intro__logo" src="/img/logo.png" alt="" width="1708" height="976" />
+</div>
+
+<script is:inline>
+  (function () {
+    var raiz = document.documentElement;
+    var intro = document.currentScript.previousElementSibling;
+    var vista = false;
+    try { vista = sessionStorage.getItem("marin-intro") === "1"; } catch (e) {}
+    var esAdmin = document.cookie.split("; ").indexOf("marin_admin=1") !== -1;
+    var moverMenos = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (vista || esAdmin || moverMenos) {
+      intro.remove();
+      return;
+    }
+    try { sessionStorage.setItem("marin-intro", "1"); } catch (e) {}
+    // "intro-activa" se queda puesta (retrasa la entrada del hero); "intro-bloqueo" solo frena el scroll
+    raiz.classList.add("intro-activa", "intro-bloqueo");
+
+    function terminar() {
+      raiz.classList.remove("intro-bloqueo");
+      intro.remove();
+    }
+    var reloj = setTimeout(terminar, 1750);
+    intro.addEventListener("click", function () {
+      clearTimeout(reloj);
+      intro.classList.add("intro--saltar");
+      setTimeout(terminar, 250);
+    });
+  })();
+</script>
+
+<style>
+  /* Secuencia (≈1,7 s): el logo se escribe → se desvanece → una línea cobre baja por el
+     centro → la pantalla se abre en dos como una cortina. */
+  .intro { display: none; }
+
+  :global(.intro-activa) .intro {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    cursor: pointer;
+    animation: intro-fin 0.01s linear 1.7s forwards; /* por si el JavaScript no alcanzara a quitarla */
+  }
+  :global(.intro-bloqueo) { overflow: hidden; }
+
+  .intro__panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50.5%;
+    background: var(--blanco);
+  }
+  .intro__panel--izq { left: 0; animation: abrir-izq 0.6s cubic-bezier(0.75, 0, 0.2, 1) 1.05s forwards; }
+  .intro__panel--der { right: 0; animation: abrir-der 0.6s cubic-bezier(0.75, 0, 0.2, 1) 1.05s forwards; }
+
+  .intro__linea {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - 1.5px);
+    width: 3px;
+    background: var(--cobre);
+    transform: scaleY(0);
+    transform-origin: top;
+    animation:
+      bajar 0.28s cubic-bezier(0.5, 0, 0.2, 1) 0.78s forwards,
+      desvanecer-linea 0.01s linear 1.05s forwards;
+  }
+
+  .intro__logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(340px, 64vw);
+    height: auto;
+    translate: -50% -50%;
+    clip-path: inset(0 100% 0 0);
+    animation:
+      escribir 0.65s cubic-bezier(0.45, 0, 0.2, 1) 0.1s forwards,
+      desvanecer 0.22s ease-in 0.75s forwards;
+  }
+
+  .intro--saltar { opacity: 0; transition: opacity 0.25s; }
+
+  @keyframes escribir { to { clip-path: inset(0 0 0 0); } }
+  @keyframes desvanecer { to { opacity: 0; scale: 0.96; } }
+  @keyframes bajar { to { transform: scaleY(1); } }
+  @keyframes desvanecer-linea { to { opacity: 0; } }
+  /* Al abrirse, cada mitad lleva el borde cobre en su orilla */
+  @keyframes abrir-izq {
+    from { box-shadow: inset -3px 0 0 var(--cobre); }
+    to { transform: translateX(-100%); box-shadow: inset -3px 0 0 var(--cobre); }
+  }
+  @keyframes abrir-der {
+    from { box-shadow: inset 3px 0 0 var(--cobre); }
+    to { transform: translateX(100%); box-shadow: inset 3px 0 0 var(--cobre); }
+  }
+  @keyframes intro-fin { to { visibility: hidden; } }
+</style>

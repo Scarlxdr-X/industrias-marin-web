@@ -18,12 +18,12 @@ const reconocimientos = ["Reconocimiento 1", "Reconocimiento 2", "Reconocimiento
         comprometidos con cerca de 50 familias. Más de 30 años de reconocimientos y buenas
         relaciones con aliados y colaboradores.
       </p>
-      <ul class="nosotros__sellos" aria-label="Reconocimientos">
+      <ul data-revelar class="nosotros__sellos" aria-label="Reconocimientos">
         {reconocimientos.map((r) => <li>{r}</li>)}
       </ul>
     </div>
 
-    <div class="nosotros__foto">
+    <div class="nosotros__foto" data-revelar>
       <Foto etiqueta="La planta o el equipo de trabajo" alto="420px" radio="4px 4px 120px 4px" />
     </div>
   </div>

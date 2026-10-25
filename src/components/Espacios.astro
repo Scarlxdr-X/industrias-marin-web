@@ -15,7 +15,7 @@ const portadaDe = (espacio: string) =>
 
 <section id="productos" class="espacios">
   <div class="contenedor">
-    <div class="espacios__cabecera">
+    <div class="espacios__cabecera" data-revelar>
       <div>
         <p class="etiqueta">Catálogo</p>
         <h2>Encuentra tu mueble <em>por espacio</em></h2>
@@ -28,7 +28,7 @@ const portadaDe = (espacio: string) =>
 
     <div class="espacios__grid">
       {espacios.map((e) => (
-        <a href={`/catalogo/${e.slug}`} class="tarjeta">
+        <a href={`/catalogo/${e.slug}`} class="tarjeta" data-revelar>
           <Foto etiqueta={e.foto} src={portadaDe(e.slug)} alto="240px" radio="0" />
           <div class="tarjeta__cuerpo">
             <div class="tarjeta__titulo">

@@ -8,10 +8,13 @@ interface Props {
   alto?: string;                            // alto máximo, ej: "520px"
   radio?: string;                           // ej: "4px 120px 4px 4px"
   prioridad?: boolean;                      // true solo para la foto principal visible al abrir
+  transicion?: string;                      // nombre para que la foto "viaje" entre páginas
 }
 
-const { etiqueta, src, alto = "320px", radio = "var(--radio)", prioridad = false } = Astro.props;
-const estilo = `height:clamp(240px, 75vw, ${alto});border-radius:${radio}`;
+const { etiqueta, src, alto = "320px", radio = "var(--radio)", prioridad = false, transicion } = Astro.props;
+const estilo =
+  `height:clamp(240px, 75vw, ${alto});border-radius:${radio}` +
+  (transicion ? `;view-transition-name:${transicion}` : "");
 ---
 
 {src && typeof src !== "string" ? (

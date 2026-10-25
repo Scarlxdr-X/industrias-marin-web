@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import "../styles/animaciones.css";
+import Intro from "../components/Intro.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import WhatsAppFlotante from "../components/WhatsAppFlotante.astro";
@@ -8,11 +10,13 @@ interface Props {
   titulo: string;
   descripcion?: string;
   noindex?: boolean;   // true en páginas que Google no debe mostrar (ej: /admin)
+  intro?: boolean;     // true solo en el inicio: muestra la intro con el logo
 }
 
 const {
   titulo,
   noindex = false,
+  intro = false,
   descripcion = "Diseño y fabricación de muebles en madera inmunizada y secada al horno. Alcobas, salas, comedores y cocinas a la medida en El Cerrito, Valle del Cauca.",
 } = Astro.props;
 ---
@@ -27,14 +31,30 @@ const {
     <meta property="og:description" content={descripcion} />
     <meta property="og:type" content="website" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <script is:inline>
+      // Activa las animaciones de scroll solo si el navegador puede mostrarlas.
+      // Si en 3 s el script de animaciones no cargó, se desactivan para no dejar nada oculto.
+      if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var raiz = document.documentElement;
+        raiz.classList.add("js-animar");
+        setTimeout(function () {
+          if (!raiz.classList.contains("animaciones-listas")) raiz.classList.remove("js-animar");
+        }, 3000);
+      }
+    </script>
   </head>
   <body>
+    {intro && <Intro />}
     <Header />
     <main>
       <slot />
     </main>
     <Footer />
     <WhatsAppFlotante />
+
+    <script>
+      import "../scripts/animaciones";
+    </script>
 
     <script>
       // El código del modo administrador solo se descarga si quien navega inició sesión.

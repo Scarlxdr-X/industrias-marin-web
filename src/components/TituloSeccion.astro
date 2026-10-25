@@ -6,7 +6,7 @@ interface Props {
 const { etiqueta, claro = false } = Astro.props;
 ---
 
-<div class:list={["titulo-seccion", { "titulo-seccion--claro": claro }]}>
+<div class:list={["titulo-seccion", { "titulo-seccion--claro": claro }]} data-revelar>
   <p class="etiqueta">{etiqueta}</p>
   <h2><slot /></h2>
 </div>
