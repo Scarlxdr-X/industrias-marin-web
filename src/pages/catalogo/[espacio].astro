@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import TarjetaProducto from "../../components/TarjetaProducto.astro";
 import { espacios, type Espacio } from "../../data/espacios";
-import { productos } from "../../data/productos";
+import { obtenerProductos } from "../../data/productos";
 import { enlaceWhatsapp } from "../../data/empresa";
 
 // 1. Le dice a Astro QUÉ páginas crear: una por cada espacio
@@ -19,12 +19,11 @@ interface Props {
 }
 const { espacio } = Astro.props;
 
-// 3. Agrupa los productos de este espacio por categoría
+// 3. Agrupa los productos de este espacio por categoría (ya vienen en orden alfabético)
+const productos = await obtenerProductos();
 const grupos = espacio.categorias.map((categoria) => ({
   categoria,
-  items: productos
-    .filter((p) => p.espacio === espacio.slug && p.categoria === categoria)
-    .sort((a, b) => a.nombre.localeCompare(b.nombre, "es")),
+  items: productos.filter((p) => p.espacio === espacio.slug && p.categoria === categoria),
 }));
 ---
 

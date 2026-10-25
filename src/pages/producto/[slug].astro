@@ -2,11 +2,12 @@
 import Base from "../../layouts/Base.astro";
 import Foto from "../../components/Foto.astro";
 import TarjetaProducto from "../../components/TarjetaProducto.astro";
-import { productos, type Producto } from "../../data/productos";
+import { obtenerProductos, type Producto } from "../../data/productos";
 import { espacios } from "../../data/espacios";
 import { enlaceWhatsapp } from "../../data/empresa";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const productos = await obtenerProductos();
   return productos.map((producto) => ({
     params: { slug: producto.slug },
     props: { producto },
@@ -21,6 +22,7 @@ const { producto } = Astro.props;
 const espacio = espacios.find((e) => e.slug === producto.espacio)!;
 
 // Hasta 3 muebles del mismo espacio, sin repetir el actual
+const productos = await obtenerProductos();
 const relacionados = productos
   .filter((p) => p.espacio === producto.espacio && p.slug !== producto.slug)
   .slice(0, 3);
@@ -42,7 +44,7 @@ const whatsapp = enlaceWhatsapp(
 
     <div class="ficha__interior">
       <div class="ficha__foto">
-        <Foto etiqueta={producto.nombre} src={producto.foto} alto="540px" radio="4px 120px 4px 4px" />
+        <Foto etiqueta={producto.nombre} src={producto.foto} alto="540px" radio="4px 120px 4px 4px" prioridad />
       </div>
 
       <div class="ficha__info">
@@ -50,7 +52,7 @@ const whatsapp = enlaceWhatsapp(
         <h1>{producto.nombre}</h1>
         {producto.descripcion && <p class="ficha__descripcion">{producto.descripcion}</p>}
 
-        {producto.detalles && (
+        {producto.detalles.length > 0 && (
           <ul class="ficha__detalles">
             {producto.detalles.map((d) => <li>{d}</li>)}
           </ul>

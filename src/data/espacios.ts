@@ -4,7 +4,7 @@ export interface Espacio {
   slug: SlugEspacio;     // va en la URL: /catalogo/alcoba
   nombre: string;
   foto: string;          // texto alternativo de la portada
-  categorias: string[];  // deben coincidir EXACTO con "categoria" en productos.ts
+  categorias: string[];  // las opciones de "Categoría" que aparecen en el panel
 }
 
 export const espacios: Espacio[] = [
@@ -45,3 +45,12 @@ export const espacios: Espacio[] = [
     categorias: ["Mecedoras", "Percheros", "Mesas decorativas", "Decoración"],
   },
 ];
+// Todas las categorías en una lista: ["Alcobas", "Armarios", "Salas", …]
+export const todasLasCategorias = espacios.flatMap((e) => e.categorias);
+
+// "Mesas de centro" → "sala". La categoría ya dice a qué espacio pertenece el mueble.
+export function espacioDeCategoria(categoria: string): SlugEspacio {
+  const espacio = espacios.find((e) => e.categorias.includes(categoria));
+  if (!espacio) throw new Error(`Categoría desconocida: "${categoria}"`);
+  return espacio.slug;
+}
