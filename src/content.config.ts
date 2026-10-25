@@ -3,7 +3,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { todasLasCategorias } from "./data/espacios";
 
-// Cada mueble es un archivo JSON en src/content/productos/ (el panel /keystatic los crea y edita).
+// Cada mueble es un archivo JSON en src/content/productos/ (el modo administrador los crea y edita).
 // Si un archivo tiene un error (categoría inexistente, nombre vacío…), `npm run build` falla
 // diciendo cuál es, así un error nunca llega a publicarse.
 const productos = defineCollection({
@@ -17,7 +17,6 @@ const productos = defineCollection({
       descripcion: z.string().default(""),
       detalles: z.array(z.string()).default([]),
       foto: image().nullable().optional(),
-      portada: z.boolean().default(false),
     }),
 });
 

@@ -1,0 +1,11 @@
+// Configuración del Worker de Cloudflare que sirve la página.
+// Las claves secretas (GITHUB_TOKEN, ADMIN_USUARIOS, SESION_SECRETO) NO van aquí:
+// se ponen en el panel de Cloudflare (Settings → Variables and Secrets) o en .dev.vars para desarrollo.
+{
+  "name": "industrias-marin",
+  "compatibility_date": "2026-10-19",
+  "vars": {
+    "GITHUB_REPO": "Scarlxdr-X/industrias-marin-web",
+    "GITHUB_RAMA": "main"
+  }
+}
