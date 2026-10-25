@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Animaciones de la página.
+   Reglas: solo se anima transform y opacity (no traban ni en celulares sencillos),
+   duraciones cortas, y NADA de esto se aplica si la persona tiene activado
+   "reducir movimiento" en su dispositivo.
+   ========================================================================== */
+
+/* ---------- Transición entre páginas (la foto "viaja" de la tarjeta a la ficha) ---------- */
+@view-transition { navigation: auto; }
+
+::view-transition-group(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 0.25s; }
+
+/* ---------- Toques que funcionan sin JavaScript ---------- */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Botones: pequeño hundimiento al tocarlos */
+  .boton:active { transform: scale(0.97); }
+
+  /* Zoom suave de la foto dentro de su marco al pasar el mouse por una tarjeta */
+  .tarjeta .foto,
+  .producto .foto { transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1); }
+  .tarjeta:hover .foto,
+  .producto:hover .foto { transform: scale(1.05); }
+
+  /* Entrada del hero al cargar (si hay intro, espera a que se abra la cortina) */
+  :root { --tras-intro: 0s; }
+  :root.intro-activa { --tras-intro: 1.15s; }
+
+  .hero__texto > * {
+    animation: subir 0.7s cubic-bezier(0.2, 0, 0, 1) backwards;
+    animation-delay: calc(var(--tras-intro) + var(--orden, 0) * 90ms);
+  }
+  .hero__texto > :nth-child(1) { --orden: 0; }
+  .hero__texto > :nth-child(2) { --orden: 1; }
+  .hero__texto > :nth-child(3) { --orden: 2; }
+  .hero__texto > :nth-child(4) { --orden: 3; }
+  .hero__texto > :nth-child(5) { --orden: 4; }
+
+  .hero__imagen .foto {
+    animation: aparecer 0.9s ease-out backwards;
+    animation-delay: calc(var(--tras-intro) + 0.15s);
+  }
+
+  /* El trazo cobre del logo se "dibuja" alrededor de la foto */
+  .hero__trazo path {
+    stroke-dasharray: 1;
+    animation: dibujar 1.3s cubic-bezier(0.6, 0, 0.2, 1) backwards;
+    animation-delay: calc(var(--tras-intro) + 0.45s);
+  }
+  .hero__trazo path + path { animation-delay: calc(var(--tras-intro) + 0.95s); }
+}
+
+/* ---------- Aparición al hacer scroll (requiere JavaScript: ver animaciones.ts) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js-animar [data-revelar]:not(.revelado) { opacity: 0; }
+  .js-animar [data-revelar].revelado {
+    animation: subir 0.7s cubic-bezier(0.2, 0, 0, 1) backwards;
+    animation-delay: var(--retraso, 0ms);
+  }
+}
+
+/* ---------- Encabezado que se compacta al bajar ---------- */
+.encabezado { transition: box-shadow 0.3s; }
+.encabezado__logo img { transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1); transform-origin: left center; }
+.encabezado--compacto { box-shadow: 0 6px 24px rgba(36, 7, 63, 0.08); }
+.encabezado--compacto .encabezado__logo img { transform: scale(0.82); }
+
+@keyframes subir {
+  from { opacity: 0; transform: translateY(22px); }
+}
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(1.03); }
+}
+@keyframes dibujar {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}

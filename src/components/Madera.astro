@@ -15,7 +15,7 @@ const pasos = [
       <TituloSeccion etiqueta="Por qué duran" claro>
         La diferencia está <em>antes</em> de cortar la primera pieza
       </TituloSeccion>
-      <p>
+      <p data-revelar>
         Antes de empezar la producción tratamos la madera en nuestra planta. Por eso
         podemos garantizar su duración hasta por 5 años.
       </p>
@@ -23,7 +23,7 @@ const pasos = [
 
     <ol class="madera__pasos">
       {pasos.map((p) => (
-        <li>
+        <li data-revelar>
           <span class="madera__numero">{p.n}</span>
           <h3>{p.titulo}</h3>
           <p>{p.texto}</p>

@@ -12,7 +12,7 @@ const pasos = [
 
 <section id="medida" class="medida">
   <div class="contenedor medida__interior">
-    <div class="medida__foto">
+    <div class="medida__foto" data-revelar>
       <Foto etiqueta="Carpintero trabajando una pieza en el taller" alto="440px" radio="120px 4px 4px 4px" />
     </div>
 
@@ -23,14 +23,14 @@ const pasos = [
 
       <ol class="medida__pasos">
         {pasos.map((p, i) => (
-          <li>
+          <li data-revelar>
             <span class="medida__numero">{i + 1}</span>
             <span><strong>{p.titulo}</strong> {p.texto}</span>
           </li>
         ))}
       </ol>
 
-      <div>
+      <div data-revelar>
         <a href={empresa.whatsapp} class="boton boton--cobre">Enviar mi idea por WhatsApp</a>
       </div>
     </div>

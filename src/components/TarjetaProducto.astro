@@ -9,9 +9,9 @@ const { producto } = Astro.props;
 ---
 
 <!-- El contenedor con data-* lo usa el modo administrador para poner los botones de editar/eliminar -->
-<div class="tarjeta-producto" data-slug={producto.slug} data-nombre={producto.nombre} data-categoria={producto.categoria}>
+<div class="tarjeta-producto" data-revelar data-slug={producto.slug} data-nombre={producto.nombre} data-categoria={producto.categoria}>
   <a href={`/producto/${producto.slug}`} class="producto">
-    <Foto etiqueta={producto.nombre} src={producto.foto} alto="260px" radio="0" />
+    <Foto etiqueta={producto.nombre} src={producto.foto} alto="260px" radio="0" transicion={`foto-${producto.slug}`} />
     <div class="producto__cuerpo">
       <span class="producto__categoria">{producto.categoria}</span>
       <h3>{producto.nombre}</h3>

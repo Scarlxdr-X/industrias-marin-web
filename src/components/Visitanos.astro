@@ -10,7 +10,7 @@ import { empresa } from "../data/empresa";
         Ven a ver y tocar <em>la madera</em>
       </TituloSeccion>
 
-      <dl class="visitanos__datos">
+      <dl class="visitanos__datos" data-revelar>
         <dt>Dirección</dt>
         <dd>{empresa.direccion.linea1}<br />{empresa.direccion.linea2}</dd>
 
@@ -24,7 +24,7 @@ import { empresa } from "../data/empresa";
         <dd><a href={empresa.whatsapp}>{empresa.celular.texto}</a> (WhatsApp)</dd>
       </dl>
 
-      <div class="visitanos__botones">
+      <div class="visitanos__botones" data-revelar>
         <a href={empresa.mapa.comoLlegar} class="boton boton--morado" target="_blank" rel="noopener">Cómo llegar</a>
         <a href={empresa.telefono.href} class="boton boton--borde">Llamar</a>
       </div>
@@ -32,6 +32,7 @@ import { empresa } from "../data/empresa";
 
     <iframe
       class="visitanos__mapa"
+      data-revelar
       src={empresa.mapa.embed}
       title="Mapa de Industrias Marín en El Cerrito"
       loading="lazy"
