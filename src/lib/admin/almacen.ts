@@ -77,6 +77,7 @@ export class AlmacenGitHub implements Almacen {
         "X-GitHub-Api-Version": "2022-11-28",
         "User-Agent": "industrias-marin-admin",
         ...(opciones.body ? { "Content-Type": "application/json" } : {}),
+        ...(opciones.headers as Record<string, string> | undefined),
       },
     });
     return r;

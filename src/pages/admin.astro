@@ -1,0 +1,186 @@
+---
+// Página de inicio de sesión del modo administrador: industriasmarin.co/admin
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Administrar | Industrias Marín" noindex>
+  <section class="acceso">
+    <div class="tarjeta">
+      <p class="etiqueta">Solo para el equipo de Industrias Marín</p>
+      <h1>Administrar <em>la página</em></h1>
+
+      <!-- Sin sesión -->
+      <form id="form-entrar" class="formulario" hidden>
+        <p class="ayuda">Entra para agregar, editar o eliminar muebles y cambiar los datos de la empresa.</p>
+        <div class="error" role="alert" hidden></div>
+
+        <label class="campo">
+          <span>Usuario</span>
+          <input name="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" required />
+        </label>
+        <label class="campo">
+          <span>Contraseña</span>
+          <span class="clave">
+            <input name="contrasena" type="password" autocomplete="current-password" required />
+            <button type="button" class="ver-clave" aria-label="Mostrar contraseña">Ver</button>
+          </span>
+        </label>
+
+        <button type="submit" class="boton boton--morado entrar">Entrar</button>
+
+        <button type="button" id="modo-prueba" class="boton boton--borde" hidden>
+          Entrar en modo prueba (solo en tu Codespace)
+        </button>
+
+        <p class="nota">¿Olvidaste tu contraseña? Pídele una nueva a la persona que administra la página.</p>
+      </form>
+
+      <!-- Con sesión -->
+      <div id="ya-dentro" class="formulario" hidden>
+        <p class="ayuda">Ya iniciaste sesión como <strong id="nombre-usuario"></strong>.</p>
+        <a href="/#productos" class="boton boton--morado">Ir al catálogo</a>
+        <button type="button" id="salir" class="boton boton--borde">Cerrar sesión</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const formulario = document.querySelector<HTMLFormElement>("#form-entrar")!;
+  const yaDentro = document.querySelector<HTMLElement>("#ya-dentro")!;
+  const caja = formulario.querySelector<HTMLElement>(".error")!;
+  const botonEntrar = formulario.querySelector<HTMLButtonElement>(".entrar")!;
+
+  const cabeceras = { "X-Marin-Admin": "1", "Content-Type": "application/json" };
+
+  function mostrarError(texto: string) {
+    caja.textContent = texto;
+    caja.hidden = false;
+  }
+
+  function irAlCatalogo(usuario: string) {
+    try {
+      sessionStorage.setItem(
+        "marin-aviso",
+        `Hola, ${usuario}. Entra a un espacio del catálogo para agregar, editar o eliminar muebles.`,
+      );
+    } catch {}
+    location.href = "/#productos";
+  }
+
+  async function entrar(cuerpo: object) {
+    caja.hidden = true;
+    botonEntrar.disabled = true;
+    botonEntrar.textContent = "Entrando…";
+    try {
+      const r = await fetch("/api/admin/sesion", { method: "POST", headers: cabeceras, body: JSON.stringify(cuerpo) });
+      const datos = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(datos.error ?? "No se pudo entrar. Intenta de nuevo.");
+      irAlCatalogo(datos.usuario);
+    } catch (error) {
+      mostrarError(error instanceof TypeError ? "No hay conexión a internet." : (error as Error).message);
+      botonEntrar.disabled = false;
+      botonEntrar.textContent = "Entrar";
+    }
+  }
+
+  formulario.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const datos = new FormData(formulario);
+    const usuario = String(datos.get("usuario") ?? "").trim();
+    const contrasena = String(datos.get("contrasena") ?? "");
+    if (!usuario || !contrasena) return mostrarError("Escribe tu usuario y tu contraseña.");
+    entrar({ usuario, contrasena });
+  });
+
+  document.querySelector("#modo-prueba")!.addEventListener("click", () => entrar({ modoPrueba: true }));
+
+  const verClave = formulario.querySelector<HTMLButtonElement>(".ver-clave")!;
+  verClave.addEventListener("click", () => {
+    const campo = formulario.querySelector<HTMLInputElement>('[name="contrasena"]')!;
+    const mostrar = campo.type === "password";
+    campo.type = mostrar ? "text" : "password";
+    verClave.textContent = mostrar ? "Ocultar" : "Ver";
+    verClave.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+  });
+
+  document.querySelector("#salir")!.addEventListener("click", async () => {
+    await fetch("/api/admin/sesion", { method: "DELETE", headers: cabeceras });
+    location.reload();
+  });
+
+  // ¿Ya hay sesión? ¿Estamos en el Codespace (modo prueba)?
+  fetch("/api/admin/sesion")
+    .then((r) => r.json())
+    .then(({ usuario, modoPrueba }) => {
+      if (usuario) {
+        document.querySelector("#nombre-usuario")!.textContent = usuario;
+        yaDentro.hidden = false;
+      } else {
+        formulario.hidden = false;
+        document.querySelector<HTMLElement>("#modo-prueba")!.hidden = !modoPrueba;
+        formulario.querySelector<HTMLInputElement>('[name="usuario"]')!.focus();
+      }
+    })
+    .catch(() => {
+      formulario.hidden = false;
+      mostrarError("No se pudo conectar con el servidor.");
+    });
+</script>
+
+<style>
+  .acceso {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: var(--espacio-seccion) 16px;
+    background: var(--lavanda);
+  }
+  .tarjeta {
+    width: min(440px, 100%);
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: clamp(28px, 6vw, 44px);
+    box-shadow: 0 20px 60px rgba(59, 11, 126, 0.12);
+    display: grid;
+    gap: 10px;
+  }
+  h1 { font-size: clamp(38px, 8vw, 48px); }
+  .formulario { display: grid; gap: 16px; margin-top: 8px; }
+  .formulario[hidden] { display: none; }
+  .ayuda { margin: 0; color: var(--texto-suave); }
+  .campo { display: grid; gap: 6px; }
+  .campo > span:first-child { font-weight: 600; font-size: 15px; }
+  .campo input {
+    font: inherit;
+    font-size: 16px;
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 14px;
+    border: 1.5px solid #D9CCE8;
+    border-radius: 10px;
+  }
+  .campo input:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 3px rgba(59, 11, 126, 0.15); }
+  .clave { position: relative; display: block; }
+  .clave input { padding-right: 84px; }
+  .ver-clave {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    font: inherit; font-size: 14px; font-weight: 600;
+    min-height: 38px; padding: 0 12px;
+    border: none; border-radius: 8px;
+    background: var(--lavanda); color: var(--morado);
+    cursor: pointer;
+  }
+  .boton { width: 100%; text-align: center; font: inherit; font-weight: 600; cursor: pointer; }
+  .boton:disabled { opacity: 0.7; cursor: default; }
+  .boton[hidden] { display: none; }
+  .error {
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #FEF3F2;
+    border: 1px solid #FDA29B;
+    color: #912018;
+    font-size: 15px;
+  }
+  .nota { margin: 4px 0 0; font-size: 14px; color: var(--texto-suave); text-align: center; }
+</style>

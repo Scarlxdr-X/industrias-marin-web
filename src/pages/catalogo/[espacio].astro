@@ -44,14 +44,14 @@ const grupos = espacio.categorias.map((categoria) => ({
 
   <div class="contenedor catalogo">
     {grupos.map((grupo) => (
-      <section class="grupo">
+      <section class="grupo" data-categoria={grupo.categoria}>
         <h2>{grupo.categoria}</h2>
 
-        {grupo.items.length > 0 ? (
-          <div class="grid">
-            {grupo.items.map((p) => <TarjetaProducto producto={p} />)}
-          </div>
-        ) : (
+        <div class="grid">
+          {grupo.items.map((p) => <TarjetaProducto producto={p} />)}
+        </div>
+
+        {grupo.items.length === 0 && (
           <div class="vacio">
             <p>Todavía no subimos fotos de <strong>{grupo.categoria.toLowerCase()}</strong>, pero sí los fabricamos.</p>
             <a class="boton boton--borde"
@@ -90,6 +90,7 @@ const grupos = espacio.categorias.map((categoria) => ({
     grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
     gap: 24px;
   }
+  .grid:empty { display: none; }
   .vacio {
     border: 1px dashed #CFC6DA;
     border-radius: var(--radio);

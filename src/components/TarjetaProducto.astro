@@ -8,16 +8,21 @@ interface Props {
 const { producto } = Astro.props;
 ---
 
-<a href={`/producto/${producto.slug}`} class="producto">
-  <Foto etiqueta={producto.nombre} src={producto.foto} alto="260px" radio="0" />
-  <div class="producto__cuerpo">
-    <span class="producto__categoria">{producto.categoria}</span>
-    <h3>{producto.nombre}</h3>
-  </div>
-</a>
+<!-- El contenedor con data-* lo usa el modo administrador para poner los botones de editar/eliminar -->
+<div class="tarjeta-producto" data-slug={producto.slug} data-nombre={producto.nombre} data-categoria={producto.categoria}>
+  <a href={`/producto/${producto.slug}`} class="producto">
+    <Foto etiqueta={producto.nombre} src={producto.foto} alto="260px" radio="0" />
+    <div class="producto__cuerpo">
+      <span class="producto__categoria">{producto.categoria}</span>
+      <h3>{producto.nombre}</h3>
+    </div>
+  </a>
+</div>
 
 <style>
+  .tarjeta-producto { position: relative; display: flex; flex-direction: column; }
   .producto {
+    flex: 1;
     display: flex;
     flex-direction: column;
     text-decoration: none;
