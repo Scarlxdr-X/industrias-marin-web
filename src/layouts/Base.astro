@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/animaciones.css";
 import Intro from "../components/Intro.astro";
+import { publicada } from "../data/sitio";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import WhatsAppFlotante from "../components/WhatsAppFlotante.astro";
@@ -30,7 +31,7 @@ const {
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
     <meta property="og:type" content="website" />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {(noindex || !publicada) && <meta name="robots" content="noindex, nofollow" />}
     <script is:inline>
       // Activa las animaciones de scroll solo si el navegador puede mostrarlas.
       // Si en 3 s el script de animaciones no cargó, se desactivan para no dejar nada oculto.
