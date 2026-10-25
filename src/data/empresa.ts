@@ -1,5 +1,14 @@
-const whatsappNumero = "573147925624";
-const mensajeWhatsapp = "Hola, vi su página web y quiero información sobre sus muebles.";
+// Los datos que cambian (teléfonos, horario, dirección…) se editan en el panel /keystatic
+// → "Datos de la empresa", y se guardan en src/content/empresa.json.
+import datos from "../content/empresa.json";
+
+const soloDigitos = (texto: string) => texto.replace(/\D/g, "");
+const whatsappNumero = "57" + soloDigitos(datos.celular);
+const direccionMapa = `${datos.direccionLinea1}, ${datos.direccionLinea2}, Colombia`;
+
+export function enlaceWhatsapp(mensaje: string = datos.mensajeWhatsapp): string {
+  return `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(mensaje)}`;
+}
 
 export const empresa = {
   nombre: "Industrias Marín",
@@ -7,33 +16,30 @@ export const empresa = {
   desde: 1988,
 
   telefono: {
-    texto: "(602) 258 4472",
-    href: "tel:+576022584472",
+    texto: datos.telefono,
+    href: `tel:+57${soloDigitos(datos.telefono)}`,
   },
   celular: {
-    texto: "314 792 5624",
+    texto: datos.celular,
   },
-    whatsapp: enlaceWhatsapp(),
+  whatsapp: enlaceWhatsapp(),
 
   direccion: {
-    linea1: "Carrera 1 # 1-131, Barrio Villa Cariño",
-    linea2: "El Cerrito, Valle del Cauca",
+    linea1: datos.direccionLinea1,
+    linea2: datos.direccionLinea2,
   },
 
-  horario: "Lunes a sábado, 8:00 a. m. – 6:00 p. m.",  
-  entregaEstimada: "3 a 5 semanas",                     // ⚠️ confirmar con la familia
+  horario: datos.horario,
+  entregaEstimada: datos.entregaEstimada,
 
   mapa: {
-    embed: "https://www.google.com/maps?q=" +
-      encodeURIComponent("Carrera 1 # 1-131, El Cerrito, Valle del Cauca, Colombia") +
-      "&output=embed",
-    comoLlegar: "https://www.google.com/maps/dir/?api=1&destination=" +
-      encodeURIComponent("Carrera 1 # 1-131, El Cerrito, Valle del Cauca, Colombia"),
+    embed: `https://www.google.com/maps?q=${encodeURIComponent(direccionMapa)}&output=embed`,
+    comoLlegar: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(direccionMapa)}`,
   },
 
   redes: {
-    instagram: "https://www.instagram.com/industriasmarin_/",
-    facebook: "https://www.facebook.com/industriasmarin",
+    instagram: datos.instagram,
+    facebook: datos.facebook,
   },
 };
 
@@ -44,7 +50,3 @@ export const menu = [
   { texto: "Nosotros", href: "/#nosotros" },
   { texto: "Visítanos", href: "/#visitanos" },
 ];
-
-export function enlaceWhatsapp(mensaje: string = mensajeWhatsapp): string {
-  return `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(mensaje)}`;
-}
