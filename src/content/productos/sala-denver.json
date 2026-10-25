@@ -1,0 +1,11 @@
+{
+  "nombre": "Sala Denver",
+  "categoria": "Salas",
+  "descripcion": "Sofá Denver, dos sillas de sala Denver y mesa de centro Denver.",
+  "detalles": [
+    "Madera de cedro",
+    "Color Janet"
+  ],
+  "foto": "../../assets/productos/sala-denver/foto.webp",
+  "portada": false
+}

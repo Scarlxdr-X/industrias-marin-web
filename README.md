@@ -1,43 +1,37 @@
-# Astro Starter Kit: Minimal
+# Industrias Marín — página web
 
-```sh
-npm create astro@latest -- --template minimal
+Página de Industrias Marín & Asociados Ltda. (muebles en madera, El Cerrito, Valle).
+Hecha con [Astro](https://astro.build) y un panel de administración con [Keystatic](https://keystatic.com).
+
+## Trabajar en el proyecto
+
+```bash
+npm install        # solo la primera vez
+npm run dev        # página en http://localhost:4321  ·  panel en http://localhost:4321/keystatic
+npm run build      # construye todo; córrelo antes de cada commit para detectar errores
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Dónde está cada cosa
 
-## 🚀 Project Structure
+| Qué | Dónde |
+|---|---|
+| Muebles (un archivo por mueble) | `src/content/productos/*.json` |
+| Fotos de los muebles | `src/assets/productos/<mueble>/foto.*` |
+| Teléfonos, horario, dirección, redes | `src/content/empresa.json` |
+| Espacios y categorías del catálogo | `src/data/espacios.ts` |
+| Colores y fuentes | `src/styles/global.css` |
+| Configuración del panel | `keystatic.config.ts` |
 
-Inside of your Astro project, you'll see the following folders and files:
+## Editar el catálogo desde el panel
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+1. Entra a `/keystatic` (en tu Codespace con `npm run dev`, o en la página publicada iniciando sesión con GitHub).
+2. **Muebles → Añadir**: nombre, categoría, foto (tal como sale del celular; la página la optimiza sola), descripción y detalles.
+3. **Guardar**. En la página publicada, el cambio aparece en 1–2 minutos (Netlify vuelve a construir el sitio).
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Marca **"Usar como portada de su espacio"** en un mueble para que su foto sea la de la tarjeta de ese espacio en el inicio.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Si un archivo queda con un error (por ejemplo, una categoría que no existe), `npm run build` falla diciendo cuál es, y Netlify no publica esa versión: la página anterior sigue funcionando.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Agregar una categoría nueva
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Edita `src/data/espacios.ts` y agrega la categoría a la lista `categorias` del espacio que corresponda. Aparece sola en el selector del panel y en la página del espacio.

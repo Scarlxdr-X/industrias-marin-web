@@ -5,6 +5,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
+console.log("⛔ Script retirado: los muebles ahora viven en src/content/productos/*.json y se editan en /keystatic"); process.exit(0);
+
 const SITIO = "https://www.industriasmarin.co";
 const CARPETA_FOTOS = "public/img/productos";
 const ARCHIVO_SALIDA = "src/data/productos.ts";

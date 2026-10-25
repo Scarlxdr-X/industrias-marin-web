@@ -1,7 +1,14 @@
 ---
 import Foto from "./Foto.astro";
 import { espacios } from "../data/espacios";
-import { productos } from "../data/productos";
+import { obtenerProductos } from "../data/productos";
+
+const productos = await obtenerProductos();
+
+// Portada de cada espacio: el mueble marcado como portada en el panel, o el primero con foto
+const portadaDe = (slug: string) =>
+  (productos.find((p) => p.espacio === slug && p.portada && p.foto) ??
+   productos.find((p) => p.espacio === slug && p.foto))?.foto;
 ---
 
 <section id="productos" class="espacios">
@@ -20,9 +27,7 @@ import { productos } from "../data/productos";
     <div class="espacios__grid">
       {espacios.map((e) => (
         <a href={`/catalogo/${e.slug}`} class="tarjeta">
-          <Foto etiqueta={e.foto}
-      src={productos.find((p) => p.espacio === e.slug && p.foto)?.foto}
-      alto="240px" radio="0" />
+          <Foto etiqueta={e.foto} src={portadaDe(e.slug)} alto="240px" radio="0" />
           <div class="tarjeta__cuerpo">
             <div class="tarjeta__titulo">
               <h3>{e.nombre}</h3>
