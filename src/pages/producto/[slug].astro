@@ -1,0 +1,115 @@
+---
+import Base from "../../layouts/Base.astro";
+import Foto from "../../components/Foto.astro";
+import TarjetaProducto from "../../components/TarjetaProducto.astro";
+import { productos, type Producto } from "../../data/productos";
+import { espacios } from "../../data/espacios";
+import { enlaceWhatsapp } from "../../data/empresa";
+
+export function getStaticPaths() {
+  return productos.map((producto) => ({
+    params: { slug: producto.slug },
+    props: { producto },
+  }));
+}
+
+interface Props {
+  producto: Producto;
+}
+const { producto } = Astro.props;
+
+const espacio = espacios.find((e) => e.slug === producto.espacio)!;
+
+// Hasta 3 muebles del mismo espacio, sin repetir el actual
+const relacionados = productos
+  .filter((p) => p.espacio === producto.espacio && p.slug !== producto.slug)
+  .slice(0, 3);
+
+const whatsapp = enlaceWhatsapp(
+  `Hola, me interesa el mueble "${producto.nombre}" que vi en la página. ¿Me pueden dar información?`
+);
+---
+
+<Base titulo={`${producto.nombre} | Industrias Marín`} descripcion={producto.descripcion}>
+  <div class="contenedor ficha">
+    <nav class="migas" aria-label="Ruta">
+      <a href="/">Inicio</a> <span aria-hidden="true">/</span>
+      <a href={`/catalogo/${espacio.slug}`}>{espacio.nombre}</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">{producto.nombre}</span>
+    </nav>
+
+    <div class="ficha__interior">
+      <div class="ficha__foto">
+        <Foto etiqueta={producto.nombre} src={producto.foto} alto="540px" radio="4px 120px 4px 4px" />
+      </div>
+
+      <div class="ficha__info">
+        <p class="etiqueta">{producto.categoria}</p>
+        <h1>{producto.nombre}</h1>
+        <p class="ficha__descripcion">{producto.descripcion}</p>
+
+        {producto.detalles && (
+          <ul class="ficha__detalles">
+            {producto.detalles.map((d) => <li>{d}</li>)}
+          </ul>
+        )}
+
+        <div class="ficha__aviso">
+          <strong>Lo puedes personalizar.</strong> Ajustamos medidas, color y acabado.
+          Toda nuestra madera es secada en horno e inmunizada.
+        </div>
+
+        <div class="ficha__botones">
+          <a href={whatsapp} class="boton boton--cobre">Cotizar este mueble</a>
+          <a href={`/catalogo/${espacio.slug}`} class="boton boton--borde">Ver más de {espacio.nombre.toLowerCase()}</a>
+        </div>
+      </div>
+    </div>
+
+    {relacionados.length > 0 && (
+      <section class="relacionados">
+        <h2>También para tu <em>{espacio.nombre.toLowerCase()}</em></h2>
+        <div class="relacionados__grid">
+          {relacionados.map((p) => <TarjetaProducto producto={p} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .ficha { padding-block: 32px 96px; }
+  .migas { font-size: 14px; color: var(--texto-suave); display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+  .migas a { color: var(--texto-suave); }
+
+  .ficha__interior { display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start; }
+  .ficha__foto { flex: 1 1 480px; min-width: 0; }
+  .ficha__info {
+    flex: 1 1 400px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ficha__info h1 { font-size: clamp(44px, 6vw, 64px); }
+  .ficha__descripcion { margin: 0; font-size: 18px; color: #4A4155; }
+
+  .ficha__detalles { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .ficha__detalles li::marker { color: var(--cobre); }
+
+  .ficha__aviso {
+    background: var(--lavanda);
+    border-radius: var(--radio);
+    padding: 18px 20px;
+    font-size: 15px;
+  }
+  .ficha__botones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .relacionados { margin-top: 96px; }
+  .relacionados h2 { font-size: clamp(34px, 4vw, 44px); margin-bottom: 28px; }
+  .relacionados__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 24px;
+  }
+</style>

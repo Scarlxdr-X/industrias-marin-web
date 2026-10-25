@@ -1,0 +1,103 @@
+---
+import Base from "../../layouts/Base.astro";
+import TarjetaProducto from "../../components/TarjetaProducto.astro";
+import { espacios, type Espacio } from "../../data/espacios";
+import { productos } from "../../data/productos";
+import { enlaceWhatsapp } from "../../data/empresa";
+
+// 1. Le dice a Astro QUÉ páginas crear: una por cada espacio
+export function getStaticPaths() {
+  return espacios.map((espacio) => ({
+    params: { espacio: espacio.slug },
+    props: { espacio },
+  }));
+}
+
+// 2. Cada página recibe su espacio
+interface Props {
+  espacio: Espacio;
+}
+const { espacio } = Astro.props;
+
+// 3. Agrupa los productos de este espacio por categoría
+const grupos = espacio.categorias.map((categoria) => ({
+  categoria,
+  items: productos.filter((p) => p.espacio === espacio.slug && p.categoria === categoria),
+}));
+---
+
+<Base titulo={`${espacio.nombre} | Industrias Marín`}
+      descripcion={`Muebles para ${espacio.nombre.toLowerCase()} en madera: ${espacio.categorias.join(", ")}. Fabricados a la medida en El Cerrito, Valle.`}>
+
+  <section class="cabecera">
+    <div class="contenedor">
+      <nav class="migas" aria-label="Ruta">
+        <a href="/">Inicio</a> <span aria-hidden="true">/</span>
+        <a href="/#productos">Catálogo</a> <span aria-hidden="true">/</span>
+        <span aria-current="page">{espacio.nombre}</span>
+      </nav>
+      <h1>{espacio.nombre}</h1>
+      <p>{espacio.categorias.join(" · ")}</p>
+    </div>
+  </section>
+
+  <div class="contenedor catalogo">
+    {grupos.map((grupo) => (
+      <section class="grupo">
+        <h2>{grupo.categoria}</h2>
+
+        {grupo.items.length > 0 ? (
+          <div class="grid">
+            {grupo.items.map((p) => <TarjetaProducto producto={p} />)}
+          </div>
+        ) : (
+          <div class="vacio">
+            <p>Todavía no subimos fotos de <strong>{grupo.categoria.toLowerCase()}</strong>, pero sí los fabricamos.</p>
+            <a class="boton boton--borde"
+               href={enlaceWhatsapp(`Hola, quisiera ver opciones de ${grupo.categoria.toLowerCase()}.`)}>
+              Pídenos fotos por WhatsApp
+            </a>
+          </div>
+        )}
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .cabecera {
+    background: var(--lavanda);
+    border-bottom: 1px solid var(--borde);
+    padding-block: 48px 56px;
+  }
+  .cabecera h1 { font-size: clamp(48px, 7vw, 72px); margin-top: 16px; }
+  .cabecera p { margin: 8px 0 0; color: var(--texto-suave); }
+
+  .migas { font-size: 14px; color: var(--texto-suave); display: flex; gap: 8px; flex-wrap: wrap; }
+  .migas a { color: var(--texto-suave); }
+
+  .catalogo { padding-block: 56px 96px; display: grid; gap: 64px; }
+  .grupo h2 {
+    font-size: 36px;
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+    border-bottom: 2px solid var(--cobre);
+    display: inline-block;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 24px;
+  }
+  .vacio {
+    border: 1px dashed #CFC6DA;
+    border-radius: var(--radio);
+    padding: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .vacio p { margin: 0; color: var(--texto-suave); }
+</style>

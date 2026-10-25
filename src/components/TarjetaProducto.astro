@@ -1,0 +1,45 @@
+---
+import Foto from "./Foto.astro";
+import type { Producto } from "../data/productos";
+
+interface Props {
+  producto: Producto;
+}
+const { producto } = Astro.props;
+---
+
+<a href={`/producto/${producto.slug}`} class="producto">
+  <Foto etiqueta={producto.nombre} src={producto.foto} alto="260px" radio="0" />
+  <div class="producto__cuerpo">
+    <span class="producto__categoria">{producto.categoria}</span>
+    <h3>{producto.nombre}</h3>
+  </div>
+</a>
+
+<style>
+  .producto {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+    background: var(--blanco);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .producto:hover {
+    color: var(--texto);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(59, 11, 126, 0.1);
+  }
+  .producto__cuerpo { padding: 18px 20px 22px; display: grid; gap: 4px; }
+  .producto__categoria {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cobre-texto);
+  }
+  .producto h3 { font-size: 28px; }
+</style>

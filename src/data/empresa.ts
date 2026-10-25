@@ -13,7 +13,7 @@ export const empresa = {
   celular: {
     texto: "314 792 5624",
   },
-  whatsapp: `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(mensajeWhatsapp)}`,
+    whatsapp: enlaceWhatsapp(),
 
   direccion: {
     linea1: "Carrera 1 # 1-131, Barrio Villa Cariño",
@@ -44,3 +44,7 @@ export const menu = [
   { texto: "Nosotros", href: "/#nosotros" },
   { texto: "Visítanos", href: "/#visitanos" },
 ];
+
+export function enlaceWhatsapp(mensaje: string = mensajeWhatsapp): string {
+  return `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(mensaje)}`;
+}

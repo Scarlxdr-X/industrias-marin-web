@@ -1,7 +1,9 @@
+export type SlugEspacio = "alcoba" | "sala" | "comedor" | "cocina" | "oficina" | "detalles";
+
 export interface Espacio {
-  slug: string;          // va en la URL: /catalogo/alcoba
+  slug: SlugEspacio;
   nombre: string;
-  foto: string;          // etiqueta de la foto (o ruta cuando la tengamos)
+  foto: string;
   categorias: string[];
 }
 
