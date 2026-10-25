@@ -31,7 +31,7 @@ const whatsapp = enlaceWhatsapp(
 ---
 
 <Base titulo={`${producto.nombre} | Industrias Marín`}
-      {producto.descripcion && <p class="ficha__descripcion">{producto.descripcion}</p>}
+      descripcion={producto.descripcion ||
         `${producto.nombre}: ${producto.categoria.toLowerCase()} en madera, fabricado a la medida por Industrias Marín en El Cerrito, Valle.`}>
   <div class="contenedor ficha">
     <nav class="migas" aria-label="Ruta">
@@ -48,7 +48,7 @@ const whatsapp = enlaceWhatsapp(
       <div class="ficha__info">
         <p class="etiqueta">{producto.categoria}</p>
         <h1>{producto.nombre}</h1>
-        <p class="ficha__descripcion">{producto.descripcion}</p>
+        {producto.descripcion && <p class="ficha__descripcion">{producto.descripcion}</p>}
 
         {producto.detalles && (
           <ul class="ficha__detalles">
