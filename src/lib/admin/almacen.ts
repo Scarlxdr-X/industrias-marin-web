@@ -35,14 +35,32 @@ export function base64ABytes(base64: string): Uint8Array {
 // ---------------------------------------------------------------- Desarrollo
 
 export class AlmacenLocal implements Almacen {
-  constructor(private origen: string) {}
+  // El servidor de desarrollo puede estar escuchando en IPv4 (127.0.0.1) o en IPv6 (::1),
+  // según la máquina (en Codespaces suele ser IPv6). Se prueban ambas y se recuerda la que sirve.
+  private static origenQueFunciona: string | null = null;
 
-  private url(ruta: string) {
-    return `${this.origen}/__almacen-local?ruta=${encodeURIComponent(ruta)}`;
+  constructor(private puerto: string) {}
+
+  private async pedir(ruta: string, opciones: RequestInit = {}) {
+    const candidatos = AlmacenLocal.origenQueFunciona
+      ? [AlmacenLocal.origenQueFunciona]
+      : [`http://127.0.0.1:${this.puerto}`, `http://[::1]:${this.puerto}`];
+    let ultimoError: unknown;
+    for (const origen of candidatos) {
+      try {
+        const r = await fetch(`${origen}/__almacen-local?ruta=${encodeURIComponent(ruta)}`, opciones);
+        AlmacenLocal.origenQueFunciona = origen;
+        return r;
+      } catch (error) {
+        ultimoError = error;
+      }
+    }
+    AlmacenLocal.origenQueFunciona = null;
+    throw ultimoError;
   }
 
   async leer(ruta: string) {
-    const r = await fetch(this.url(ruta));
+    const r = await this.pedir(ruta);
     if (r.status === 404) return null;
     if (!r.ok) throw new Error(`No se pudo leer ${ruta} (${r.status})`);
     return new Uint8Array(await r.arrayBuffer());
@@ -52,8 +70,8 @@ export class AlmacenLocal implements Almacen {
     for (const cambio of cambios) {
       const r =
         "borrar" in cambio
-          ? await fetch(this.url(cambio.ruta), { method: "DELETE" })
-          : await fetch(this.url(cambio.ruta), { method: "PUT", body: aBytes(cambio.contenido) });
+          ? await this.pedir(cambio.ruta, { method: "DELETE" })
+          : await this.pedir(cambio.ruta, { method: "PUT", body: aBytes(cambio.contenido) });
       if (!r.ok) throw new Error(`No se pudo guardar ${cambio.ruta} (${r.status})`);
     }
   }

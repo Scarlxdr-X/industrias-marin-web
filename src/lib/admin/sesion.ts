@@ -127,10 +127,9 @@ export async function exigirAdministrador(request: Request, cookies: AstroCookie
 
 export function almacenPara(request: Request): Almacen {
   if (MODO_PRUEBA) {
-    // Siempre por http y 127.0.0.1: en Codespaces la URL llega como "https://localhost:4321"
-    // (por el reenvío de puertos), pero el servidor local de desarrollo solo habla http.
-    const puerto = new URL(request.url).port || "4321";
-    return new AlmacenLocal(`http://127.0.0.1:${puerto}`);
+    // En Codespaces la URL llega como "https://localhost:4321" (por el reenvío de puertos),
+    // pero el servidor local de desarrollo solo habla http: AlmacenLocal usa la dirección local.
+    return new AlmacenLocal(new URL(request.url).port || "4321");
   }
   const token = variable("GITHUB_TOKEN");
   if (!token) throw new Error("Falta la variable secreta GITHUB_TOKEN en Cloudflare");

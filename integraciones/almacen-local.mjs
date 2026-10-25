@@ -20,6 +20,14 @@ export default function almacenLocal() {
   return {
     name: "almacen-local",
     hooks: {
+      // En algunas máquinas (como Codespaces) "localhost" es IPv6 (::1) y el servidor de
+      // desarrollo no escucharía en 127.0.0.1, que es donde el panel le habla. Lo fijamos en IPv4.
+      "astro:config:setup": ({ config, updateConfig, command }) => {
+        if (command === "dev" && !config.server.host) {
+          updateConfig({ server: { host: "127.0.0.1" } });
+        }
+      },
+
       "astro:server:setup": ({ server }) => {
         const raiz = server.config.root;
 
