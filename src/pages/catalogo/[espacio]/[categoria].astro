@@ -1,0 +1,55 @@
+---
+// Página de una categoría (ej: /catalogo/alcoba/armarios): todos sus muebles,
+// con accesos rápidos a las demás categorías del mismo espacio.
+import Base from "../../../layouts/Base.astro";
+import CabeceraCatalogo from "../../../components/CabeceraCatalogo.astro";
+import ListaProductos from "../../../components/ListaProductos.astro";
+import { espacios, slugCategoria, type Espacio } from "../../../data/espacios";
+import { obtenerProductos } from "../../../data/productos";
+
+export function getStaticPaths() {
+  return espacios
+    .filter((e) => e.categorias.length > 1)
+    .flatMap((espacio) =>
+      espacio.categorias.map((categoria) => ({
+        params: { espacio: espacio.slug, categoria: slugCategoria(categoria) },
+        props: { espacio, categoria },
+      })),
+    );
+}
+
+interface Props {
+  espacio: Espacio;
+  categoria: string;
+}
+const { espacio, categoria } = Astro.props;
+
+const delEspacio = (await obtenerProductos()).filter((p) => p.espacio === espacio.slug);
+const productos = delEspacio.filter((p) => p.categoria === categoria);
+const chips = espacio.categorias.map((c) => ({
+  texto: c,
+  href: `/catalogo/${espacio.slug}/${slugCategoria(c)}`,
+  activo: c === categoria,
+  cantidad: delEspacio.filter((p) => p.categoria === c).length,
+}));
+---
+
+<Base
+  titulo={`${categoria} | ${espacio.nombre} | Industrias Marín`}
+  descripcion={`${categoria} en madera fabricados a la medida por Industrias Marín en El Cerrito, Valle del Cauca.`}
+>
+  <CabeceraCatalogo
+    migas={[
+      { texto: "Inicio", href: "/" },
+      { texto: espacio.nombre, href: `/catalogo/${espacio.slug}` },
+      { texto: categoria },
+    ]}
+    titulo={categoria}
+    bajada={`${productos.length} ${productos.length === 1 ? "modelo" : "modelos"} · todos se pueden hacer a tu medida`}
+    chips={chips}
+  />
+
+  <div class="contenedor">
+    <ListaProductos categoria={categoria} productos={productos} />
+  </div>
+</Base>

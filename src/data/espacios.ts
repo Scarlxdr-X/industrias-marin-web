@@ -54,3 +54,22 @@ export function espacioDeCategoria(categoria: string): SlugEspacio {
   if (!espacio) throw new Error(`Categoría desconocida: "${categoria}"`);
   return espacio.slug;
 }
+
+// "Mesas de centro" → "mesas-de-centro" (para la dirección /catalogo/sala/mesas-de-centro)
+export function slugCategoria(categoria: string) {
+  return categoria
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Dirección de la lista de una categoría. Si el espacio tiene una sola categoría
+// (ej: Cocina), la lista está directamente en la página del espacio.
+export function urlCategoria(categoria: string) {
+  const espacio = espacios.find((e) => e.categorias.includes(categoria));
+  if (!espacio) return "/#productos";
+  return espacio.categorias.length === 1
+    ? `/catalogo/${espacio.slug}`
+    : `/catalogo/${espacio.slug}/${slugCategoria(categoria)}`;
+}

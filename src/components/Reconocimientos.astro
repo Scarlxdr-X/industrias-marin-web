@@ -1,0 +1,125 @@
+---
+// Reconocimientos que ha recibido la empresa.
+// variante "franja": banda morada con los logos desfilando (inicio).
+// variante "galeria": cuadrícula con su descripción (página Nosotros).
+import { Image } from "astro:assets";
+import { reconocimientos } from "../data/marca";
+
+interface Props {
+  variante?: "franja" | "galeria";
+}
+const { variante = "franja" } = Astro.props;
+---
+
+{reconocimientos.length > 0 && (variante === "franja" ? (
+  <section class="franja" aria-labelledby="titulo-reconocimientos">
+    <div class="contenedor franja__texto" data-revelar>
+      <p class="etiqueta">Reconocimientos</p>
+      <h2 id="titulo-reconocimientos">
+        Más de 30 años de <em>reconocimientos</em> y buenas relaciones con aliados y colaboradores
+      </h2>
+      <a href="/nosotros#reconocimientos" class="franja__enlace">Verlos todos <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="franja__pista" aria-hidden="true">
+      <!-- La lista va dos veces para que el desfile sea continuo -->
+      {[0, 1].map(() => (
+        <ul class="franja__logos">
+          {reconocimientos.map((r) => (
+            <li><Image src={r.foto} alt="" width={260} height={222} /></li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </section>
+) : (
+  <section id="reconocimientos" class="galeria" aria-labelledby="titulo-galeria">
+    <div class="contenedor">
+      <p class="etiqueta" data-revelar>Reconocimientos</p>
+      <h2 id="titulo-galeria" data-revelar>Lo que han dicho <em>de nosotros</em></h2>
+      <ul class="galeria__lista">
+        {reconocimientos.map((r) => (
+          <li data-revelar>
+            <figure>
+              <Image src={r.foto} alt={r.descripcion} width={432} height={369} />
+              <figcaption>{r.descripcion}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+))}
+
+<style>
+  /* ---------- Franja (inicio) ---------- */
+  .franja {
+    background: var(--morado);
+    padding-block: clamp(48px, 7vw, 80px);
+    overflow: hidden;
+  }
+  .franja__texto { display: grid; gap: 12px; margin-bottom: 40px; }
+  .franja .etiqueta { color: var(--cobre-claro); }
+  .franja h2 { color: var(--blanco); font-size: clamp(30px, 3.6vw, 44px); max-width: 760px; }
+  .franja__enlace { color: var(--cobre-claro); font-weight: 600; text-decoration: none; }
+  .franja__enlace:hover { color: var(--blanco); }
+
+  .franja__pista {
+    display: flex;
+    width: max-content;
+    animation: desfilar 60s linear infinite;
+  }
+  .franja__pista:hover { animation-play-state: paused; }
+  .franja__logos {
+    list-style: none;
+    margin: 0;
+    padding: 0 10px;
+    display: flex;
+    gap: 20px;
+  }
+  .franja__logos li {
+    width: 220px;
+    height: 188px;
+    padding: 14px;
+    border-radius: 10px;
+    background: var(--blanco);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+  .franja__logos :global(img) { width: 100%; height: 100%; object-fit: contain; }
+
+  @keyframes desfilar { to { transform: translateX(-50%); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .franja__pista { animation: none; width: auto; overflow-x: auto; }
+    .franja__logos + .franja__logos { display: none; }
+  }
+
+  /* ---------- Galería (página Nosotros) ---------- */
+  .galeria { padding-block: var(--espacio-seccion); background: var(--lavanda); scroll-margin-top: 90px; }
+  .galeria h2 { font-size: clamp(38px, 5vw, 52px); margin: 8px 0 40px; }
+  .galeria__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 24px;
+  }
+  .galeria figure {
+    margin: 0;
+    height: 100%;
+    padding: 16px 16px 20px;
+    border-radius: 10px;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .galeria figure:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(59, 11, 126, 0.1); }
+  .galeria :global(img) { width: 100%; height: auto; aspect-ratio: 432 / 369; object-fit: contain; }
+  .galeria figcaption { font-size: 15px; color: var(--texto-suave); line-height: 1.45; }
+</style>

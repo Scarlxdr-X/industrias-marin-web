@@ -35,7 +35,9 @@ Las fotos se reducen en el celular antes de subirse (≈200 KB) y Astro genera v
 |---|---|
 | Muebles (un archivo por mueble) | `src/content/productos/*.json` |
 | Fotos de los muebles | `src/assets/productos/<mueble>/foto.*` |
-| Portada de cada espacio en el inicio | `src/content/portadas.json` |
+| Portada de cada espacio (y fotos del carrusel del inicio) | `src/content/portadas.json` |
+| Fotos de la empresa, íconos y reconocimientos | `src/assets/marca/` (descripciones en `src/data/marca.ts`) |
+| Historia, misión y visión | `src/pages/nosotros.astro` |
 | Teléfonos, horario, dirección, redes | `src/content/empresa.json` |
 | Espacios y categorías del catálogo | `src/data/espacios.ts` |
 | Colores y fuentes | `src/styles/global.css` |

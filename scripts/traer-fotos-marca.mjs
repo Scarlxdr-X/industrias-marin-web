@@ -11,7 +11,7 @@ const DESTINO = "src/assets/marca";
 const fotos = {
   "taller.webp": "1cfe5d_e9e880c14ae548ebb16a89fe1c8f9f8a~mv2.jpg",
   "nosotros.webp": "1cfe5d_5e02e3054f704210bf7345774c407da6~mv2.jpg",
-  "sala-exhibicion.webp": "1cfe5d_2c8bc5516d7a4f2bbdab91fa5b957f4e~mv2.jpg",
+  "textura-madera.webp": "1cfe5d_2c8bc5516d7a4f2bbdab91fa5b957f4e~mv2.jpg",
 };
 
 const iconos = {
@@ -32,9 +32,6 @@ const reconocimientos = [
   "1cfe5d_e9169b47af9b40d7b09ca4db76aac49b~mv2.png",
   "1cfe5d_e43a138e5a594e9cba7e3dfaf1c4a671~mv2.png",
   "1cfe5d_dc27311b13a64138917e4cb5fda4ef38~mv2.png",
-  "1cfe5d_fc7a9c3865e9460f9c63114747191970~mv2.png",
-  "1cfe5d_0de08e5acb1c422f8e33ecd68c3dc5e6~mv2.png",
-  "1cfe5d_72c471d23366485fa0fc5e811fdb8d1b~mv2.png",
 ];
 
 async function bajar(archivo) {

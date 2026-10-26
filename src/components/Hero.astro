@@ -1,116 +1,282 @@
 ---
-import Foto from "./Foto.astro";
+// Portada del inicio: banner ancho con fotos que van cambiando (una por espacio del catálogo).
+// Las fotos son las "portadas" que se eligen en el modo administrador
+// ("Usar esta foto como portada de …"); si un espacio no tiene, se usa su primer mueble con foto.
+import { Image } from "astro:assets";
 import { empresa } from "../data/empresa";
-import fotoHero from "../assets/productos/alcoba-alpes/foto.webp";
+import { espacios } from "../data/espacios";
+import { obtenerProductos } from "../data/productos";
+import portadasElegidas from "../content/portadas.json";
 
-const datos = [
-  { valor: String(empresa.desde), texto: "empezamos en un pequeño local" },
-  { valor: "5 años", texto: "de duración garantizada" },
-  { valor: "≈50", texto: "familias trabajan con nosotros" },
-];
+const productos = await obtenerProductos();
+const portadas: Record<string, string> = portadasElegidas;
+
+const diapositivas = espacios
+  .map((e) => {
+    const mueble =
+      productos.find((p) => p.slug === portadas[e.slug] && p.foto) ??
+      productos.find((p) => p.espacio === e.slug && p.foto);
+    return mueble?.foto ? { espacio: e, mueble, foto: mueble.foto } : null;
+  })
+  .filter((d) => d !== null);
 ---
 
-<section class="hero">
-  <div class="contenedor hero__interior">
+<section class="hero" aria-label="Presentación">
+  <div class="hero__marco" data-carrusel>
+    <!-- Fotos -->
+    <div class="hero__fotos">
+      {diapositivas.map((d, i) => (
+        <figure class:list={["hero__diapositiva", { activa: i === 0 }]} data-diapositiva aria-hidden={i !== 0 ? "true" : undefined}>
+          <Image
+            src={d.foto}
+            alt={`${d.mueble.nombre}, ${d.espacio.nombre.toLowerCase()} en madera`}
+            widths={[640, 960, 1280, 1920]}
+            sizes="100vw"
+            loading={i === 0 ? "eager" : "lazy"}
+            fetchpriority={i === 0 ? "high" : "auto"}
+          />
+          <figcaption>
+            <a href={`/catalogo/${d.espacio.slug}`}>
+              <span>{d.espacio.nombre}</span> Ver {d.espacio.nombre.toLowerCase()} →
+            </a>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <!-- Texto -->
     <div class="hero__texto">
-      <p class="etiqueta">Fábrica propia · +30 años</p>
+      <p class="etiqueta">Fábrica propia · desde {empresa.desde}</p>
       <h1>Muebles en madera,<br /><em>hechos para durar.</em></h1>
       <p class="hero__bajada">
         Diseñamos y fabricamos alcobas, salas, comedores y cocinas en nuestra planta de
-        El Cerrito. Toda la madera pasa por secado en horno e inmunizado antes de
-        convertirse en tu mueble.
+        El Cerrito. Toda la madera pasa por secado en horno e inmunizado.
       </p>
       <div class="hero__botones">
         <a href="#productos" class="boton boton--morado">Ver catálogo</a>
-        <a href={empresa.whatsapp} class="boton boton--borde">Cotiza un mueble a tu medida</a>
+        <a href={empresa.whatsapp} class="boton boton--borde">Cotiza a tu medida</a>
       </div>
-      <dl class="hero__datos">
-        {datos.map((d) => (
-          <div>
-            <dt>{d.valor}</dt>
-            <dd>{d.texto}</dd>
-          </div>
-        ))}
-      </dl>
     </div>
 
-    <div class="hero__imagen">
-      <!-- Trazo cobre inspirado en la "L" del logo -->
-      <svg class="hero__trazo" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true">
-        <path pathLength="1" d="M8 392 C 30 300, 40 180, 30 20" />
-        <path pathLength="1" d="M8 392 C 120 372, 300 372, 392 386" />
-      </svg>
-      <Foto etiqueta="Alcoba Alpes en madera" src={fotoHero} alto="520px" radio="4px 120px 4px 4px" prioridad />
-    </div>
+    <!-- Controles -->
+    {diapositivas.length > 1 && (
+      <div class="hero__controles">
+        <div class="hero__indicadores" role="tablist" aria-label="Fotos">
+          {diapositivas.map((d, i) => (
+            <button
+              type="button"
+              role="tab"
+              class:list={["hero__indicador", { activa: i === 0 }]}
+              aria-label={`Ver ${d.espacio.nombre}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              data-ir={i}
+            ><span></span></button>
+          ))}
+        </div>
+        <div class="hero__flechas">
+          <button type="button" class="hero__flecha" data-anterior aria-label="Foto anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+          </button>
+          <button type="button" class="hero__flecha" data-siguiente aria-label="Foto siguiente">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+        </div>
+      </div>
+    )}
   </div>
 </section>
 
+<script>
+  import "../scripts/carrusel";
+</script>
+
 <style>
-  .hero { overflow: hidden; }
-  .hero__interior {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 56px;
-    padding-block: 72px 88px;
+  .hero { padding: 16px 16px 0; }
+
+  .hero__marco {
+    --alto: clamp(480px, 74vh, 720px);
+    --pausa: 6s; /* tiempo que se muestra cada foto (lo usa también carrusel.ts) */
+    position: relative;
+    max-width: 1440px;
+    margin: 0 auto;
+    height: var(--alto);
+    border-radius: 6px 120px 6px 6px;
+    overflow: hidden;
+    background: var(--gris-foto);
+    isolation: isolate;
   }
+
+  /* ---------- Fotos que se funden una en otra ---------- */
+  .hero__fotos { position: absolute; inset: 0; }
+  .hero__diapositiva {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .hero__diapositiva.activa { opacity: 1; z-index: 1; }
+  .hero__diapositiva img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+  .hero__diapositiva figcaption {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2;
+  }
+  .hero__diapositiva figcaption a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    color: var(--morado);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(36, 7, 63, 0.15);
+  }
+  .hero__diapositiva figcaption span {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cobre-texto);
+  }
+
+  /* ---------- Texto sobre un velo blanco a la izquierda ---------- */
   .hero__texto {
-    flex: 1 1 440px;
-    min-width: 0;
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    max-width: 640px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    justify-content: center;
+    gap: 22px;
+    padding: 48px clamp(28px, 5vw, 72px);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 62%, rgba(255, 255, 255, 0) 100%);
   }
-  .hero h1 { font-size: clamp(44px, 6vw, 68px); }
-  .hero__bajada { margin: 0; font-size: 19px; color: #4A4155; max-width: 520px; }
-  .hero__botones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-
-  .hero__datos {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    max-width: 520px;
-    margin: 24px 0 0;
-    padding-top: 24px;
-    border-top: 1px solid var(--borde);
-  }
-  .hero__datos dt {
-    font-family: var(--fuente-titulos);
-    font-size: 40px;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--morado);
-  }
-  .hero__datos dd { margin: 4px 0 0; font-size: 14px; color: var(--texto-suave); }
-
-  .hero__imagen {
-    flex: 1 1 440px;
-    min-width: 0;
-    position: relative;
-    padding: 0 0 28px 28px;
-  }
-  .hero__imagen :global(.foto) { position: relative; }
-  .hero__trazo {
+  .hero__marco::before {
+    /* prolonga el velo un poco más allá del texto para que la transición sea suave */
+    content: "";
     position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 70%;
-    height: 70%;
-    overflow: visible;
+    inset: 0 auto 0 0;
+    width: min(820px, 70%);
+    z-index: 2;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    pointer-events: none;
   }
-  .hero__trazo path {
-    fill: none;
-    stroke: var(--cobre);
-    stroke-width: 7;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
-  }
+  .hero h1 { font-size: clamp(44px, 5.4vw, 72px); }
+  .hero__bajada { margin: 0; font-size: 19px; color: #3F3549; max-width: 480px; }
+  .hero__botones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
 
-    @media (max-width: 640px) {
-    .hero__interior { padding-block: 40px 56px; gap: 36px; }
+  /* ---------- Indicadores con barra de progreso y flechas ---------- */
+  .hero__controles {
+    position: absolute;
+    left: clamp(28px, 5vw, 72px);
+    right: 24px;
+    bottom: 24px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    pointer-events: none;
+  }
+  .hero__controles > * { pointer-events: auto; }
+  .hero__indicadores { display: flex; gap: 8px; }
+  .hero__indicador {
+    width: 44px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: grid;
+    align-items: center;
+  }
+  .hero__indicador span {
+    display: block;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(59, 11, 126, 0.2);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero__indicador span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--morado);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .hero__indicador.activa span::after { transform: scaleX(1); }
+  .hero__indicador:focus-visible { outline: 2px solid var(--cobre); outline-offset: 2px; }
+
+  .hero__flechas { display: none; }
+
+  /* ---------- Celular: foto arriba, texto abajo ---------- */
+  @media (max-width: 760px) {
+    .hero { padding: 0; }
+    .hero__marco {
+      height: auto;
+      border-radius: 0;
+      background: var(--blanco);
+      display: flex;
+      flex-direction: column;
+    }
+    .hero__marco::before { display: none; }
+    .hero__fotos {
+      position: relative;
+      height: 58vh;
+      min-height: 340px;
+      border-radius: 0 0 0 64px;
+      overflow: hidden;
+    }
+    .hero__diapositiva img { object-position: center; }
+    .hero__diapositiva figcaption { right: 14px; bottom: 14px; }
+    .hero__texto {
+      height: auto;
+      max-width: none;
+      background: none;
+      padding: 28px 20px 40px;
+      gap: 16px;
+    }
     .hero__bajada { font-size: 17px; }
     .hero__botones .boton { flex: 1 1 auto; text-align: center; }
-    .hero__datos dt { font-size: 32px; }
-    .hero__imagen { padding: 0 0 18px 18px; }
+    .hero__controles {
+      top: 12px;
+      bottom: auto;
+      left: 16px;
+      right: auto;
+    }
+    .hero__indicador { width: 28px; }
+    .hero__indicador span { background: rgba(255, 255, 255, 0.55); }
+    .hero__indicador span::after { background: var(--blanco); }
+  }
+
+  @media (min-width: 761px) {
+    .hero__flechas { display: flex; gap: 8px; margin-left: auto; margin-right: 260px; }
+    .hero__flecha {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--morado);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 18px rgba(36, 7, 63, 0.15);
+      transition: transform 0.15s;
+    }
+    .hero__flecha:hover { transform: scale(1.06); }
+    .hero__flecha svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   }
 </style>
