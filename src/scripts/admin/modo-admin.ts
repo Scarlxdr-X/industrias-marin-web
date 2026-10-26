@@ -2,7 +2,7 @@
 // Agrega sobre la página normal: la barra de arriba, la tarjeta "+ Agregar mueble",
 // los botones de editar/eliminar y las ventanas de formulario.
 import "./admin.css";
-import { espacios, espacioDeCategoria } from "../../data/espacios";
+import { espacios, espacioDeCategoria, urlCategoria } from "../../data/espacios";
 import {
   ErrorApi, agregarPendiente, api, avisar, avisarAlLlegar, guardarPendientes, leerPendientes,
   mostrarAvisoPendiente, olvidarAviso, prepararFoto, type FotoPreparada, type Pendiente,
@@ -188,7 +188,7 @@ function mejorarFicha() {
     abrirFormulario({ slug, categoria, fotoActual: ficha.querySelector<HTMLImageElement>(".ficha__foto img")?.currentSrc }),
   );
   panel.querySelector('[data-accion="eliminar"]')!.addEventListener("click", () =>
-    confirmarEliminar(slug!, nombre!, null, `/catalogo/${espacio}`),
+    confirmarEliminar(slug!, nombre!, null, urlCategoria(categoria) || `/catalogo/${espacio}`),
   );
   ficha.prepend(panel);
 }
@@ -385,7 +385,7 @@ async function abrirFormulario({ slug, categoria, fotoActual }: OpcionesFormular
         } else {
           // Se agregó a una categoría de otro espacio: llevamos al usuario allá
           avisarAlLlegar(`✓ «${nombre}» agregado. Aparecerá para todos en 1–2 minutos.`);
-          location.href = `/catalogo/${espacioDeCategoria(datos.categoria)}`;
+          location.href = urlCategoria(datos.categoria);
         }
       }
     } catch (error) {

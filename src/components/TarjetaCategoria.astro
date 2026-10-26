@@ -1,0 +1,111 @@
+---
+// Tarjeta grande de una categoría dentro de un espacio (ej: en Alcoba → "Alcobas" y "Armarios").
+// Muestra un collage con las primeras fotos y cuántos modelos hay.
+import { Image } from "astro:assets";
+import { urlCategoria } from "../data/espacios";
+import type { Producto } from "../data/productos";
+
+interface Props {
+  categoria: string;
+  productos: Producto[];
+  indice?: number;
+}
+const { categoria, productos, indice = 0 } = Astro.props;
+const fotos = productos.filter((p) => p.foto).slice(0, 3);
+const cantidad = productos.length;
+---
+
+<a href={urlCategoria(categoria)} class:list={["categoria", { "categoria--vacia": fotos.length === 0 }]} data-revelar>
+  <div class:list={["categoria__collage", `categoria__collage--${Math.min(fotos.length, 3)}`]}>
+    {fotos.map((p, i) => (
+      <Image
+        src={p.foto!}
+        alt={i === 0 ? `${categoria}: ${p.nombre}` : ""}
+        widths={i === 0 ? [480, 800, 1200] : [320, 480]}
+        sizes={i === 0 ? "(max-width: 760px) 100vw, 40vw" : "20vw"}
+        loading={indice < 2 && i === 0 ? "eager" : "lazy"}
+      />
+    ))}
+    {fotos.length === 0 && (
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4Z" /><circle cx="12" cy="13" r="4" /></svg>
+    )}
+  </div>
+  <div class="categoria__pie">
+    <div>
+      <h2>{categoria}</h2>
+      <p>{cantidad > 0 ? `${cantidad} ${cantidad === 1 ? "modelo" : "modelos"}` : "Próximamente · pídenos fotos"}</p>
+    </div>
+    <span class="categoria__flecha" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+    </span>
+  </div>
+</a>
+
+<style>
+  .categoria {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--texto);
+    border-radius: 6px 6px 6px 48px;
+    overflow: hidden;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.35s;
+  }
+  .categoria:hover {
+    color: var(--texto);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(59, 11, 126, 0.12);
+  }
+
+  .categoria__collage {
+    height: clamp(260px, 32vw, 380px);
+    display: grid;
+    gap: 4px;
+    background: var(--lavanda);
+  }
+  .categoria__collage--3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+  .categoria__collage--3 :global(img:first-child) { grid-row: 1 / 3; }
+  .categoria__collage--2 { grid-template-columns: 2fr 1fr; }
+  .categoria__collage :global(img) {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1);
+  }
+  .categoria:hover .categoria__collage :global(img) { transform: scale(1.05); }
+  .categoria__collage svg {
+    place-self: center;
+    width: 56px;
+    height: 56px;
+    fill: none;
+    stroke: #B9A9CB;
+    stroke-width: 1.4;
+  }
+
+  .categoria__pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 26px 26px;
+  }
+  .categoria h2 { font-size: clamp(30px, 3vw, 40px); }
+  .categoria p { margin: 4px 0 0; font-size: 15px; color: var(--texto-suave); }
+  .categoria--vacia p { color: var(--cobre-texto); }
+  .categoria__flecha {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--lavanda);
+    color: var(--morado);
+    transition: background 0.25s, color 0.25s, transform 0.25s;
+  }
+  .categoria:hover .categoria__flecha { background: var(--morado); color: var(--blanco); transform: translateX(4px); }
+  .categoria__flecha svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>

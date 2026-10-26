@@ -47,6 +47,6 @@ export const menu = [
   { texto: "Productos", href: "/#productos" },
   { texto: "Hecho a medida", href: "/#medida" },
   { texto: "Nuestra madera", href: "/#calidad" },
-  { texto: "Nosotros", href: "/#nosotros" },
+  { texto: "Nosotros", href: "/nosotros" },
   { texto: "Visítanos", href: "/#visitanos" },
 ];

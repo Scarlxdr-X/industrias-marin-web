@@ -1,0 +1,234 @@
+---
+// Mosaico de fotos y textos: la historia de la empresa y por qué duran sus muebles.
+// (Reemplaza la antigua sección morada numerada.)
+import { Image } from "astro:assets";
+import { empresa } from "../data/empresa";
+import { fotoMarca } from "../data/marca";
+
+const taller = fotoMarca("taller.webp");
+const manos = fotoMarca("nosotros.webp");
+const textura = fotoMarca("textura-madera.webp");
+
+const proceso = [
+  { titulo: "Secado en horno", texto: "Retiramos la humedad para que la madera no se tuerza ni se agriete." },
+  { titulo: "Inmunizado", texto: "La protegemos contra insectos y hongos antes de trabajarla." },
+  { titulo: "Fabricación propia", texto: "Cortamos, armamos y ensamblamos en nuestra planta." },
+  { titulo: "Acabados a mano", texto: "Lijado, tinte y laca con el color que elijas." },
+];
+---
+
+<section id="calidad" class="historia" aria-label="Nuestra historia y nuestra madera">
+  <div class="historia__mosaico">
+
+    <!-- 1. Historia -->
+    <article class="bloque bloque--historia" data-revelar>
+      {textura && <Image class="bloque__textura" src={textura} alt="" widths={[800, 1400]} sizes="50vw" />}
+      <div class="bloque__contenido">
+        <p class="etiqueta">Nuestra historia</p>
+        <h2>Comenzamos en un pequeño local <em>en {empresa.desde}</em></h2>
+        <p>
+          Hoy tenemos planta propia en El Cerrito y apoyamos el desarrollo de la región,
+          comprometidos con cerca de 50 familias.
+        </p>
+        <dl class="bloque__cifras">
+          <div><dt>+30</dt><dd>años fabricando</dd></div>
+          <div><dt>≈50</dt><dd>familias en el equipo</dd></div>
+          <div><dt>5</dt><dd>años de garantía</dd></div>
+        </dl>
+        <a href="/nosotros" class="bloque__enlace">Conoce nuestra historia <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+
+    <!-- 2. Foto del taller -->
+    <figure class="bloque bloque--foto bloque--taller" data-revelar>
+      {taller ? (
+        <Image src={taller} alt="Trabajador de Industrias Marín cortando madera en la planta" widths={[480, 800]} sizes="(max-width: 760px) 100vw, 50vw" />
+      ) : <div class="bloque__vacio">Foto del taller</div>}
+      <figcaption>Nuestra planta en El Cerrito</figcaption>
+    </figure>
+
+    <!-- 3. Foto de manos trabajando -->
+    <figure class="bloque bloque--foto bloque--manos" data-revelar>
+      {manos ? (
+        <Image src={manos} alt="Manos de un carpintero midiendo una pieza de madera" widths={[640, 1000, 1400]} sizes="(max-width: 760px) 100vw, 50vw" />
+      ) : <div class="bloque__vacio">Foto de trabajo en madera</div>}
+    </figure>
+
+    <!-- 4. Por qué duran -->
+    <article class="bloque bloque--madera" data-revelar>
+      <div class="bloque__contenido">
+        <p class="etiqueta">Por qué duran</p>
+        <h2>Secado en horno <em>e inmunizado</em></h2>
+        <p>
+          Antes de cortar la primera pieza tratamos la madera en nuestra planta.
+          Por eso garantizamos su duración hasta por 5 años.
+        </p>
+        <ol class="bloque__proceso">
+          {proceso.map((p) => (
+            <li>
+              <strong>{p.titulo}</strong>
+              <span>{p.texto}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .historia {
+    padding: var(--espacio-seccion) 16px;
+    scroll-margin-top: 90px;
+  }
+  .historia__mosaico {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "h h h h h h h t t t t t"
+      "m m m m m d d d d d d d";
+    gap: 16px;
+  }
+  .bloque {
+    position: relative;
+    margin: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    min-height: 460px;
+  }
+  .bloque--historia { grid-area: h; background: var(--berenjena); color: #E7DCF2; border-top-left-radius: 120px; }
+  .bloque--taller { grid-area: t; }
+  .bloque--manos { grid-area: m; border-bottom-left-radius: 120px; }
+  .bloque--madera { grid-area: d; background: var(--lavanda); }
+
+  /* Fondo de textura de madera, teñido con el morado de la marca */
+  .bloque__textura {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.22;
+    mix-blend-mode: luminosity;
+  }
+  .bloque__contenido {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    padding: clamp(32px, 5vw, 64px);
+  }
+  .bloque h2 { font-size: clamp(36px, 4vw, 52px); }
+  .bloque p { margin: 0; max-width: 520px; }
+  .bloque--historia .etiqueta { color: var(--cobre-claro); }
+  .bloque--historia h2 { color: var(--blanco); }
+
+  .bloque__cifras {
+    margin: 6px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 40px;
+  }
+  .bloque__cifras dt {
+    font-family: var(--fuente-titulos);
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--cobre-claro);
+  }
+  .bloque__cifras dd { margin: 4px 0 0; font-size: 14px; color: #CDBEDD; }
+
+  .bloque__enlace {
+    align-self: flex-start;
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    color: var(--blanco);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .bloque__enlace:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--blanco); color: var(--blanco); }
+  .bloque__enlace span { transition: transform 0.2s; }
+  .bloque__enlace:hover span { transform: translateX(4px); }
+
+  .bloque--foto :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+  .bloque--foto:hover :global(img) { transform: scale(1.04); }
+  .bloque--foto figcaption {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--morado);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .bloque__vacio {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: var(--gris-foto);
+    color: var(--texto-suave);
+  }
+
+  .bloque--madera p { color: #4A4155; }
+  .bloque__proceso {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 28px;
+    counter-reset: paso;
+  }
+  .bloque__proceso li {
+    position: relative;
+    padding-left: 22px;
+    display: grid;
+    gap: 2px;
+    font-size: 15px;
+    color: var(--texto-suave);
+  }
+  .bloque__proceso li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cobre);
+    box-shadow: 0 0 0 4px rgba(205, 115, 50, 0.18);
+  }
+  .bloque__proceso strong { color: var(--morado); font-size: 16px; }
+
+  @media (max-width: 960px) {
+    .historia__mosaico {
+      grid-template-columns: 1fr;
+      grid-template-areas: "h" "t" "d" "m";
+    }
+    .bloque { min-height: 0; }
+    .bloque--foto { height: 380px; }
+    .bloque--historia { border-top-left-radius: 64px; }
+    .bloque--manos { border-bottom-left-radius: 64px; }
+  }
+  @media (max-width: 560px) {
+    .historia { padding-inline: 0; }
+    .bloque { border-radius: 0; }
+    .bloque__proceso { grid-template-columns: 1fr; }
+  }
+</style>

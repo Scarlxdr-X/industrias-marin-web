@@ -1,0 +1,88 @@
+---
+// Los cinco valores de la empresa con sus íconos (los mismos de la marca).
+import { Image } from "astro:assets";
+import { iconoMarca } from "../data/marca";
+
+interface Props {
+  titulo?: boolean; // muestra el título de la sección (en la página Nosotros)
+}
+const { titulo = false } = Astro.props;
+
+const valores = [
+  { icono: "a-tu-medida.png", texto: "Muebles a tu medida", detalle: "Ajustamos medidas, color y acabado." },
+  { icono: "inmunizado.png", texto: "Inmunizado garantizado", detalle: "Madera protegida contra insectos y hongos." },
+  { icono: "acabados.png", texto: "Excelentes acabados", detalle: "Lijado, tinte y laca hechos a mano." },
+  { icono: "experiencia.png", texto: "+30 años de experiencia", detalle: "Fabricando muebles desde 1988." },
+  { icono: "ambiente.png", texto: "Responsables con el ambiente", detalle: "Madera bien aprovechada y procesos cuidadosos." },
+];
+---
+
+<section class="valores" aria-labelledby={titulo ? "titulo-valores" : undefined} aria-label={titulo ? undefined : "Lo que nos distingue"}>
+  <div class="contenedor">
+    {titulo && <h2 id="titulo-valores" data-revelar>Lo que nos <em>distingue</em></h2>}
+    <ul class="valores__lista">
+      {valores.map((v) => {
+        const icono = iconoMarca(v.icono);
+        return (
+          <li data-revelar>
+            <span class="valores__icono">
+              {icono ? (
+                <Image src={icono} alt="" width={96} height={96} />
+              ) : (
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+              )}
+            </span>
+            <strong>{v.texto}</strong>
+            <span class="valores__detalle">{v.detalle}</span>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .valores { padding-block: clamp(40px, 6vw, 64px); border-bottom: 1px solid var(--borde); }
+  .valores h2 { font-size: clamp(38px, 5vw, 52px); text-align: center; margin-bottom: 40px; }
+  .valores__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+  .valores__lista li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .valores__icono {
+    width: 96px;
+    height: 96px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+  }
+  .valores__lista li:hover .valores__icono { transform: translateY(-4px) rotate(-4deg); }
+  .valores__icono :global(img) { width: 96px; height: 96px; }
+  .valores__icono svg {
+    width: 40px; height: 40px;
+    fill: none; stroke: var(--cobre); stroke-width: 1.8;
+  }
+  .valores strong { font-size: 17px; font-weight: 600; color: var(--morado); line-height: 1.3; }
+  .valores__detalle { font-size: 14px; color: var(--texto-suave); line-height: 1.45; max-width: 200px; }
+
+  @media (max-width: 900px) {
+    .valores__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .valores__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+    .valores__lista li:last-child { grid-column: 1 / -1; }
+    .valores__icono, .valores__icono :global(img) { width: 76px; height: 76px; }
+    .valores strong { font-size: 15px; }
+  }
+</style>

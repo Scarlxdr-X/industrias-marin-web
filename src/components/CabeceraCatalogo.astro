@@ -1,0 +1,89 @@
+---
+// Encabezado de las páginas del catálogo: ruta (migas), título y, si hay, accesos
+// rápidos a las demás categorías del mismo espacio.
+interface Miga { texto: string; href?: string }
+interface Chip { texto: string; href: string; activo?: boolean; cantidad?: number }
+
+interface Props {
+  migas: Miga[];
+  titulo: string;
+  bajada?: string;
+  chips?: Chip[];
+}
+const { migas, titulo, bajada, chips = [] } = Astro.props;
+---
+
+<section class="cabecera">
+  <div class="contenedor">
+    <nav class="migas" aria-label="Ruta">
+      {migas.map((m, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">/</span>}
+          {m.href ? <a href={m.href}>{m.texto}</a> : <span aria-current="page">{m.texto}</span>}
+        </>
+      ))}
+    </nav>
+    <h1>{titulo}</h1>
+    {bajada && <p class="cabecera__bajada">{bajada}</p>}
+
+    {chips.length > 0 && (
+      <nav class="chips" aria-label="Categorías">
+        {chips.map((c) => (
+          <a href={c.href} class:list={["chip", { "chip--activo": c.activo }]} aria-current={c.activo ? "page" : undefined}>
+            {c.texto}
+            {c.cantidad !== undefined && <span class="chip__cantidad">{c.cantidad}</span>}
+          </a>
+        ))}
+      </nav>
+    )}
+  </div>
+</section>
+
+<style>
+  .cabecera {
+    background: var(--lavanda);
+    border-bottom: 1px solid var(--borde);
+    padding-block: 40px 48px;
+  }
+  .migas { font-size: 14px; color: var(--texto-suave); display: flex; gap: 8px; flex-wrap: wrap; }
+  .migas a { color: var(--texto-suave); }
+  h1 { font-size: clamp(48px, 7vw, 72px); margin-top: 14px; }
+  .cabecera__bajada { margin: 8px 0 0; color: var(--texto-suave); font-size: 17px; }
+
+  .chips {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid #D9CCE8;
+    background: var(--blanco);
+    color: var(--morado);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .chip:hover { border-color: var(--morado); color: var(--morado); }
+  .chip--activo { background: var(--morado); border-color: var(--morado); color: var(--blanco); }
+  .chip--activo:hover { color: var(--blanco); }
+  .chip__cantidad {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--lavanda);
+    color: var(--morado);
+  }
+  .chip--activo .chip__cantidad { background: rgba(255, 255, 255, 0.2); color: var(--blanco); }
+</style>

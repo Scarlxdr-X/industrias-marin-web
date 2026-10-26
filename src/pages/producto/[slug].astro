@@ -3,7 +3,7 @@ import Base from "../../layouts/Base.astro";
 import Foto from "../../components/Foto.astro";
 import TarjetaProducto from "../../components/TarjetaProducto.astro";
 import { obtenerProductos, type Producto } from "../../data/productos";
-import { espacios } from "../../data/espacios";
+import { espacios, urlCategoria } from "../../data/espacios";
 import { enlaceWhatsapp } from "../../data/empresa";
 
 export async function getStaticPaths() {
@@ -21,11 +21,14 @@ const { producto } = Astro.props;
 
 const espacio = espacios.find((e) => e.slug === producto.espacio)!;
 
-// Hasta 3 muebles del mismo espacio, sin repetir el actual
+// Hasta 3 muebles relacionados: primero de la misma categoría, luego del mismo espacio
 const productos = await obtenerProductos();
-const relacionados = productos
-  .filter((p) => p.espacio === producto.espacio && p.slug !== producto.slug)
-  .slice(0, 3);
+const otros = productos.filter((p) => p.espacio === producto.espacio && p.slug !== producto.slug);
+const relacionados = [
+  ...otros.filter((p) => p.categoria === producto.categoria),
+  ...otros.filter((p) => p.categoria !== producto.categoria),
+].slice(0, 3);
+const enlaceCategoria = urlCategoria(producto.categoria);
 
 const whatsapp = enlaceWhatsapp(
   `Hola, me interesa el mueble "${producto.nombre}" que vi en la página. ¿Me pueden dar información?`
@@ -39,6 +42,9 @@ const whatsapp = enlaceWhatsapp(
     <nav class="migas" aria-label="Ruta">
       <a href="/">Inicio</a> <span aria-hidden="true">/</span>
       <a href={`/catalogo/${espacio.slug}`}>{espacio.nombre}</a> <span aria-hidden="true">/</span>
+      {espacio.categorias.length > 1 && (
+        <><a href={enlaceCategoria}>{producto.categoria}</a> <span aria-hidden="true">/</span></>
+      )}
       <span aria-current="page">{producto.nombre}</span>
     </nav>
 
@@ -65,7 +71,7 @@ const whatsapp = enlaceWhatsapp(
 
         <div class="ficha__botones">
           <a href={whatsapp} class="boton boton--cobre">Cotizar este mueble</a>
-          <a href={`/catalogo/${espacio.slug}`} class="boton boton--borde">Ver más de {espacio.nombre.toLowerCase()}</a>
+          <a href={enlaceCategoria} class="boton boton--borde">Ver más {producto.categoria.toLowerCase()}</a>
         </div>
       </div>
     </div>

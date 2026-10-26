@@ -1,0 +1,49 @@
+---
+// Cuadrícula de muebles de UNA categoría. El modo administrador la reconoce por
+// data-categoria y le agrega la tarjeta "+ Agregar mueble".
+import TarjetaProducto from "./TarjetaProducto.astro";
+import { enlaceWhatsapp } from "../data/empresa";
+import type { Producto } from "../data/productos";
+
+interface Props {
+  categoria: string;
+  productos: Producto[];
+}
+const { categoria, productos } = Astro.props;
+---
+
+<section class="grupo" data-categoria={categoria} aria-label={categoria}>
+  <div class="grid">
+    {productos.map((p) => <TarjetaProducto producto={p} />)}
+  </div>
+
+  {productos.length === 0 && (
+    <div class="vacio">
+      <p>Todavía no subimos fotos de <strong>{categoria.toLowerCase()}</strong>, pero sí los fabricamos.</p>
+      <a class="boton boton--borde" href={enlaceWhatsapp(`Hola, quisiera ver opciones de ${categoria.toLowerCase()}.`)}>
+        Pídenos fotos por WhatsApp
+      </a>
+    </div>
+  )}
+</section>
+
+<style>
+  .grupo { padding-block: 48px 96px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 24px;
+  }
+  .grid:empty { display: none; }
+  .vacio {
+    border: 1px dashed #CFC6DA;
+    border-radius: var(--radio);
+    padding: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .vacio p { margin: 0; color: var(--texto-suave); }
+</style>
