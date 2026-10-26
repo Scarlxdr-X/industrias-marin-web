@@ -71,6 +71,20 @@ function usuariosRegistrados(): Map<string, string> {
   return usuarios;
 }
 
+// Para revisar la configuración sin mostrar ningún valor secreto: /api/admin/sesion?revisar
+export function estadoConfiguracion() {
+  const usuarios = [...usuariosRegistrados()];
+  return {
+    usuarios: usuarios.map(([nombre, hash]) => ({
+      nombre,
+      formatoValido: /^pbkdf2\$\d+\$[A-Za-z0-9+/=]+\$[A-Za-z0-9+/=]+$/.test(hash),
+    })),
+    sesionSecreto: Boolean(variable("SESION_SECRETO")),
+    githubToken: Boolean(variable("GITHUB_TOKEN")),
+    githubRepo: variable("GITHUB_REPO") ?? null,
+  };
+}
+
 export async function comprobarCredenciales(usuario: string, contrasena: string) {
   const guardado = usuariosRegistrados().get(usuario.trim().toLowerCase());
   if (!guardado) return false;

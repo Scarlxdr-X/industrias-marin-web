@@ -3,13 +3,16 @@
 // DELETE → cerrar sesión
 import type { APIRoute } from "astro";
 import {
-  MODO_PRUEBA, cerrarSesion, comprobarCredenciales, iniciarSesion, respuesta, usuarioActual,
+  MODO_PRUEBA, cerrarSesion, comprobarCredenciales, estadoConfiguracion, iniciarSesion, respuesta, usuarioActual,
 } from "../../../lib/admin/sesion";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ cookies }) =>
-  respuesta({ usuario: await usuarioActual(cookies), modoPrueba: MODO_PRUEBA });
+export const GET: APIRoute = async ({ cookies, url }) => {
+  // /api/admin/sesion?revisar → muestra si las claves secretas están puestas (nunca sus valores)
+  if (url.searchParams.has("revisar")) return respuesta(estadoConfiguracion());
+  return respuesta({ usuario: await usuarioActual(cookies), modoPrueba: MODO_PRUEBA });
+};
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   if (request.headers.get("X-Marin-Admin") !== "1") return respuesta({ error: "Solicitud no permitida" }, 403);
