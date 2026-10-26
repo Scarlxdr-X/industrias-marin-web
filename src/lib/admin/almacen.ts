@@ -25,7 +25,7 @@ export function bytesABase64(bytes: Uint8Array): string {
   return btoa(binario);
 }
 
-export function base64ABytes(base64: string): Uint8Array {
+export function base64ABytes(base64: string): Uint8Array<ArrayBuffer> {
   const binario = atob(base64.replace(/\s/g, ""));
   const bytes = new Uint8Array(binario.length);
   for (let i = 0; i < binario.length; i++) bytes[i] = binario.charCodeAt(i);
@@ -71,7 +71,7 @@ export class AlmacenLocal implements Almacen {
       const r =
         "borrar" in cambio
           ? await this.pedir(cambio.ruta, { method: "DELETE" })
-          : await this.pedir(cambio.ruta, { method: "PUT", body: aBytes(cambio.contenido) });
+          : await this.pedir(cambio.ruta, { method: "PUT", body: aBytes(cambio.contenido) as BodyInit });
       if (!r.ok) throw new Error(`No se pudo guardar ${cambio.ruta} (${r.status})`);
     }
   }
